@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     type: "website",
     url: "https://haryword.com",
+    // 썸네일 이미지 추가 시 주석 해제
     // images: [
     //   {
     //     url: "./favicon.ico",
