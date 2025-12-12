@@ -97,11 +97,14 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable} font-sans min-h-screen flex flex-col`}
+        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
         <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-[#121212]">
           <div className="max-w-[1200px] mx-auto px-6 h-16 grid grid-cols-3 items-center border-b border-black dark:border-[#A0A0A0]">
-            <div className="text-left text-sm font-medium tracking-widest text-[#111111] dark:text-[#F1F1F1]">
+            <div
+              suppressHydrationWarning={true}
+              className="text-left text-sm font-medium tracking-widest text-[#111111] dark:text-[#F1F1F1]"
+            >
               {todayFormatted}
             </div>
             <h1 className="text-center text-lg font-bold tracking-tight cursor-pointer">

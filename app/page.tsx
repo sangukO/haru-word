@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { supabase } from "@/utils/supabase";
-import { getTodayDate } from "@/utils/date";
+import { getTodayDate, offsetDate } from "@/utils/date";
 import { DEFAULT_THEME_COLOR } from "@/constants/theme";
 import MidnightUpdater from "@/components/MidnightUpdater";
+import ShareButton from "@/components/ShareButton";
+import Link from "next/link";
 
 // 캐싱 방지 설정
 export const dynamic = "force-dynamic";
@@ -17,20 +19,83 @@ export default async function Home() {
     .single();
 
   if (error || !word) {
+    // DB에서 가장 최신 단어 날짜를 가져옴
+    const { data: latest, error: latestError } = await supabase
+      .from("words")
+      .select("date")
+      .order("date", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (latestError || !latest) {
+      return (
+        <main className="flex flex-1 flex-col items-center justify-center px-6 text-center break-keep">
+          <div className="relative space-y-6">
+            <div className="absolute left-[34.5%] text-6xl animate-ping">
+              🚨
+            </div>
+            <div className="relative text-6xl">🚨</div>
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-[#F1F1F1]">
+              일시적인 오류가 발생했어요.
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              단어장을 불러오는 데 실패했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </p>
+            {/* 새로고침 버튼 */}
+            <div className="pt-4">
+              <a
+                href="/"
+                className="px-6 py-3 bg-red-500 text-white font-bold rounded-full hover:bg-red-600 transition-colors inline-block"
+              >
+                다시 시도하기
+              </a>
+            </div>
+          </div>
+        </main>
+      );
+    }
+
+    // 최신 날짜가 있으면 링크 제공
+    const latestDate = latest?.date || "/";
+
     return (
-      <main className="flex flex-1 flex-col items-center justify-center p-6 text-center">
-        <h1 className="text-2xl font-bold mb-2">
-          오늘의 단어가 아직 도착하지 않았어요. 🚚
-        </h1>
-        <p>관리자가 열심히 배달 중입니다!</p>
+      <main className="flex flex-1 flex-col items-center justify-center px-6 text-center break-keep">
+        <div className="space-y-6">
+          <div className="text-6xl animate-[bounce_2s_infinite]">🚚</div>
+
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-[#F1F1F1]">
+            오늘의 단어가 아직 도착하지 않았어요.
+          </h1>
+
+          <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+            관리자가 열심히 배달 중입니다!
+            <br />
+            다른 날짜의 단어를 먼저 구경해 보세요.
+          </p>
+
+          <div className="pt-4 flex justify-center">
+            <Link
+              href={`/date/${latestDate}`}
+              className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition-opacity inline-block"
+            >
+              최근 단어 보기
+            </Link>
+          </div>
+        </div>
       </main>
     );
   }
 
   const accentColor = word.color ?? DEFAULT_THEME_COLOR;
+  const prevDate = offsetDate(word.date, -1);
+
+  const shareText = `오늘의 단어는 '${word.word}'입니다.`;
+  const sharePath = `/date/${word.date}`;
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24 pb-12">
+    <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
       <MidnightUpdater />
       <article className="max-w-[1200px] w-full text-center">
         {/* 단어 제목 및 한자*/}
@@ -80,6 +145,21 @@ export default async function Home() {
             💡 {word.detail}
           </div>
         )}
+
+        {/* 공유 버튼에 고정 URL 전달 */}
+        <div className="flex justify-center mt-8 mb-4">
+          <ShareButton text={shareText} url={sharePath} />
+        </div>
+
+        <nav className="flex justify-start items-center pt-8 text-sm">
+          {/* 이전 버튼 (어제로 가기) */}
+          <Link
+            href={`/date/${prevDate}`}
+            className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          >
+            ← {prevDate.slice(5)}
+          </Link>
+        </nav>
       </article>
     </main>
   );
