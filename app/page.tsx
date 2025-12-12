@@ -16,8 +16,6 @@ export default async function Home() {
     .eq("date", today)
     .single();
 
-  const accentColor = word.color ?? DEFAULT_THEME_COLOR;
-
   if (error || !word) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center p-6 text-center">
@@ -28,6 +26,8 @@ export default async function Home() {
       </main>
     );
   }
+
+  const accentColor = word.color ?? DEFAULT_THEME_COLOR;
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24 pb-12">
