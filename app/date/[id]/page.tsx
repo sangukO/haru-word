@@ -5,7 +5,8 @@ import { SERVICE_START_DATE } from "@/constants/service";
 import ShareButton from "@/components/ShareButton";
 import Link from "next/link";
 import { Metadata } from "next";
-import LoginButton from "@/components/LoginButton";
+import PageLoginSection from "@/components/PageLoginSection";
+import { createClient } from "@/utils/supabase/server";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -33,6 +34,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function DatePage({ params }: Props) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   // URL에서 가져온 날짜
   const { id } = await params;
   const today = getTodayDate();
@@ -212,12 +218,7 @@ export default async function DatePage({ params }: Props) {
           <ShareButton text={shareText} url={sharePath} />
         </div>
 
-        <div className="mt-8 mb-12 flex flex-col items-center gap-3">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            로그인하고 나만의 단어장을 만들어보세요
-          </p>
-          <LoginButton text="Google 계정으로 로그인" />
-        </div>
+        <PageLoginSection user={user} />
 
         {/* 메인 화면 이동 버튼 */}
         <nav className="flex justify-between items-center pt-8 text-sm">

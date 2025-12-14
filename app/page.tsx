@@ -6,11 +6,18 @@ import MidnightUpdater from "@/components/MidnightUpdater";
 import ShareButton from "@/components/ShareButton";
 import Link from "next/link";
 import LoginButton from "@/components/LoginButton";
+import PageLoginSection from "@/components/PageLoginSection";
+import { createClient } from "@/utils/supabase/server";
 
 // 캐싱 방지 설정
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const today = getTodayDate();
   // Supabase에서 오늘 날짜의 단어를 가져옴
   const { data: word, error } = await supabase
@@ -148,8 +155,8 @@ export default async function Home() {
                   </span>
                   <span
                     className="transition-all duration-300
-                   brightness-[0.7] saturate-[1.2]
-                   dark:brightness-[1.8] dark:saturate-[1.5]"
+                    brightness-[0.7] saturate-[1.2]
+                    dark:brightness-[1.8] dark:saturate-[1.5]"
                     style={{ color: accentColor }}
                   >
                     {word.refined_word}
@@ -174,12 +181,7 @@ export default async function Home() {
           <ShareButton text={shareText} url={sharePath} />
         </div>
 
-        <div className="mt-8 mb-12 flex flex-col items-center gap-3">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            로그인하고 나만의 단어장을 만들어보세요
-          </p>
-          <LoginButton text="Google 계정으로 로그인" />
-        </div>
+        <PageLoginSection user={user} />
 
         <nav className="flex justify-start items-center pt-8 text-sm">
           {/* 이전 버튼 (어제로 가기) */}

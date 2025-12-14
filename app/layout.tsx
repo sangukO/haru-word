@@ -6,6 +6,7 @@ import Link from "next/link";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { supabase } from "@/utils/supabase";
 import Header from "@/components/Header";
+import { createClient } from "@/utils/supabase/server";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -77,6 +78,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 서버에서 유저 정보 확인
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const todayFormatted = getFormattedDate();
 
   // 서버에서 방문자 수 가져오기
@@ -99,7 +106,11 @@ export default async function RootLayout({
       <body
         className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
-        <Header todayFormatted={todayFormatted} initialView={initialView} />
+        <Header
+          user={user}
+          todayFormatted={todayFormatted}
+          initialView={initialView}
+        />
         {children}
         <footer className="w-full text-center text-xs py-6 mt-auto text-sub">
           © 2025 Haru Word. All rights reserved. Created by OSOSO.

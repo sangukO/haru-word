@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "@/utils/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Roboto } from "next/font/google";
 
 //구글 로그인 가이드 - roboto 폰트 사용
@@ -19,31 +19,26 @@ export default function LoginButton({
   text = "Google 계정으로 시작하기",
   className = "",
 }: LoginButtonProps) {
+  const supabase = createClient();
+
+  // 로그인 끝나면 현재 주소로 돌아옴
   const handleLogin = async () => {
-    // 로그인 끝나면 현재 주소로 돌아옴
     const redirectTo =
       typeof window !== "undefined" ? window.location.origin : "";
 
+    // 쿠키에 세션 저장
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: redirectTo,
-        queryParams: {
-          access_type: "offline",
-          prompt: "consent",
-        },
+        redirectTo: `${redirectTo}/auth/callback`,
+        queryParams: { access_type: "offline", prompt: "consent" },
       },
     });
-
     if (error) {
       console.error("로그인 에러 발생:", error.message);
       alert("로그인에 실패했습니다. 다시 시도해 주세요.");
     }
   };
-
-  const baseStyle =
-    "flex items-center justify-center gap-2 font-semibold text-white transition-all border border-black bg-black hover:opacity-80 dark:border-white rounded-[4px] cursor-pointer";
-  const defaultSize = className.includes("px-") ? "" : "px-3 py-2 text-sm";
 
   return (
     <button
