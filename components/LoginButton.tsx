@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { Roboto } from "next/font/google";
+import { usePathname } from "next/navigation";
 
 //구글 로그인 가이드 - roboto 폰트 사용
 const roboto = Roboto({
@@ -19,18 +20,21 @@ export default function LoginButton({
   text = "Google 계정으로 시작하기",
   className = "",
 }: LoginButtonProps) {
-  const supabase = createClient();
+  const pathname = usePathname();
 
   // 로그인 끝나면 현재 주소로 돌아옴
   const handleLogin = async () => {
+    const supabase = createClient();
     const redirectTo =
-      typeof window !== "undefined" ? window.location.origin : "";
+      typeof window !== "undefined"
+        ? `${location.origin}/auth/callback?next=${pathname}`
+        : "";
 
     // 쿠키에 세션 저장
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${redirectTo}/auth/callback`,
+        redirectTo: `${redirectTo}`,
         queryParams: { access_type: "offline", prompt: "consent" },
       },
     });
