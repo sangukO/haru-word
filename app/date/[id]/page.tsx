@@ -137,21 +137,16 @@ export default async function DatePage({ params }: Props) {
     <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
       <article className="max-w-[1200px] w-full text-center">
         {/* 단어 제목 및 한자*/}
-        <div
-          className="mb-6"
-          style={
-            {
-              "--accent": accentColor,
-            } as React.CSSProperties
-          }
-        >
+        <div className="mb-6">
           {word.hanja && (
             <span
               className="font-extrabold transition-all duration-300
               font-serif text-6xl md:text-9xl
               text-[#111111] dark:text-[#F1F1F1]
-              [text-shadow:5px_5px_3px_var(--accent)] dark:[text-shadow:5px_5px_3px_var(--accent)]
               block mb-4"
+              style={{
+                textShadow: `5px 5px 5px ${accentColor}`,
+              }}
             >
               {word.hanja}
             </span>
