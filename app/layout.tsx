@@ -4,8 +4,8 @@ import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
 import Link from "next/link";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import HitCounter from "@/components/HitCounter";
 import { supabase } from "@/utils/supabase";
+import Header from "@/components/Header";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -99,24 +99,7 @@ export default async function RootLayout({
       <body
         className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
-        <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-[#121212]">
-          <div className="max-w-[1200px] mx-auto px-6 h-16 grid grid-cols-3 items-center border-b border-black dark:border-[#A0A0A0]">
-            <div
-              suppressHydrationWarning={true}
-              className="text-left text-sm font-medium tracking-widest text-[#111111] dark:text-[#F1F1F1]"
-            >
-              {todayFormatted}
-            </div>
-            <h1 className="text-center text-lg font-bold tracking-tight cursor-pointer">
-              <Link href="/">하루단어</Link>
-            </h1>
-            <div className="text-right">
-              <div className="w-full h-6 inline-block">
-                <HitCounter initialView={initialView} />
-              </div>
-            </div>
-          </div>
-        </header>
+        <Header todayFormatted={todayFormatted} initialView={initialView} />
         {children}
         <footer className="w-full text-center text-xs py-6 mt-auto text-sub">
           © 2025 Haru Word. All rights reserved. Created by OSOSO.

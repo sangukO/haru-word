@@ -5,6 +5,7 @@ import { SERVICE_START_DATE } from "@/constants/service";
 import ShareButton from "@/components/ShareButton";
 import Link from "next/link";
 import { Metadata } from "next";
+import LoginButton from "@/components/LoginButton";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -185,8 +186,8 @@ export default async function DatePage({ params }: Props) {
                   </span>
                   <span
                     className="transition-all duration-300
-                   brightness-[0.7] saturate-[1.2]
-                   dark:brightness-[1.8] dark:saturate-[1.5]"
+                    brightness-[0.7] saturate-[1.2]
+                    dark:brightness-[1.8] dark:saturate-[1.5]"
                     style={{ color: accentColor }}
                   >
                     {word.refined_word}
@@ -209,6 +210,13 @@ export default async function DatePage({ params }: Props) {
         {/* 공유 버튼에 고정 URL 전달 */}
         <div className="flex justify-center mt-8 mb-4">
           <ShareButton text={shareText} url={sharePath} />
+        </div>
+
+        <div className="mt-8 mb-12 flex flex-col items-center gap-3">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            로그인하고 나만의 단어장을 만들어보세요
+          </p>
+          <LoginButton text="Google 계정으로 로그인" />
         </div>
 
         {/* 메인 화면 이동 버튼 */}

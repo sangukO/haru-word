@@ -5,6 +5,7 @@ import { DEFAULT_THEME_COLOR } from "@/constants/theme";
 import MidnightUpdater from "@/components/MidnightUpdater";
 import ShareButton from "@/components/ShareButton";
 import Link from "next/link";
+import LoginButton from "@/components/LoginButton";
 
 // 캐싱 방지 설정
 export const dynamic = "force-dynamic";
@@ -171,6 +172,13 @@ export default async function Home() {
         {/* 공유 버튼에 고정 URL 전달 */}
         <div className="flex justify-center mt-8 mb-4">
           <ShareButton text={shareText} url={sharePath} />
+        </div>
+
+        <div className="mt-8 mb-12 flex flex-col items-center gap-3">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            로그인하고 나만의 단어장을 만들어보세요
+          </p>
+          <LoginButton text="Google 계정으로 로그인" />
         </div>
 
         <nav className="flex justify-start items-center pt-8 text-sm">
