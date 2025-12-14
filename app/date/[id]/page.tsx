@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import PageLoginSection from "@/components/PageLoginSection";
 import { createClient } from "@/utils/supabase/server";
+import ColorSetter from "@/components/ColorSetter";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -142,6 +143,7 @@ export default async function DatePage({ params }: Props) {
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
+      <ColorSetter color={accentColor} />
       <article className="max-w-[1200px] w-full text-center">
         {/* 단어 제목 및 한자*/}
         <div className="mb-6">

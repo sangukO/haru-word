@@ -14,8 +14,19 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      // 리다이렉트 응답 객체
+      const response = NextResponse.redirect(`${origin}${next}`);
+
+      // 웰컴 메시지
+      response.cookies.set("welcome-toast", "true", {
+        path: "/",
+        maxAge: 10,
+        httpOnly: false,
+        sameSite: "lax",
+      });
+
       // 교환 성공하면 원래 페이지로 이동
-      return NextResponse.redirect(`${origin}${next}`);
+      return response;
     }
   }
 

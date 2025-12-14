@@ -6,6 +6,8 @@ import HitCounter from "@/components/HitCounter";
 import LoginButton from "./LoginButton";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface HeaderProps {
   user: User | null; // 레이아웃에서 전달된 사용자 정보
@@ -19,9 +21,23 @@ export default function Header({
   initialView,
 }: HeaderProps) {
   const supabase = createClient();
+  const router = useRouter();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const hasWelcomeCookie = document.cookie.includes("welcome-toast=true");
+
+    if (hasWelcomeCookie && user) {
+      setTimeout(() => {
+        toast.success(`반갑습니다, ${user.user_metadata.full_name}님!`, {
+          description: "오늘도 하루 단어를 채워보세요.",
+          icon: "👋",
+        });
+      }, 300);
+    }
+  }, [user]);
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -48,7 +64,12 @@ export default function Header({
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsDropdownOpen(false);
-    window.location.reload();
+    toast("로그아웃 되었습니다.", {
+      description: "다음에 또 만나요! 👋",
+    });
+
+    // 강제 새로고침 대신 부드러운 갱신 사용
+    router.refresh();
   };
 
   return (
@@ -74,7 +95,7 @@ export default function Header({
                 className={`
                 group relative flex items-center justify-center
                 h-10 px-3 rounded-sm gap-3
-                border transition-all duration-200 ease-in-out cursor-pointer`}
+                transition-all duration-200 ease-in-out cursor-pointer`}
               >
                 {/* (선택) 프로필 사진 작게 보여주기 */}
                 {user.user_metadata.avatar_url && (
@@ -116,7 +137,7 @@ export default function Header({
                   {/* 로그아웃 */}
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[#3A1E1E] transition-colors text-left"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[#3A1E1E] transition-colors text-left cursor-pointer"
                   >
                     로그아웃
                   </button>

@@ -8,6 +8,7 @@ import Link from "next/link";
 import LoginButton from "@/components/LoginButton";
 import PageLoginSection from "@/components/PageLoginSection";
 import { createClient } from "@/utils/supabase/server";
+import ColorSetter from "@/components/ColorSetter";
 
 // 캐싱 방지 설정
 export const dynamic = "force-dynamic";
@@ -105,6 +106,7 @@ export default async function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
       <MidnightUpdater />
+      <ColorSetter color={accentColor} />
       <article className="max-w-[1200px] w-full text-center">
         {/* 단어 제목 및 한자*/}
         <div className="mb-6">

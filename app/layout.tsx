@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
-import Link from "next/link";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { supabase } from "@/utils/supabase";
 import Header from "@/components/Header";
 import { createClient } from "@/utils/supabase/server";
+import { Toaster } from "sonner";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -116,6 +115,12 @@ export default async function RootLayout({
           © 2025 Haru Word. All rights reserved. Created by OSOSO.
         </footer>
         <GoogleAnalytics gaId="G-782YRDQX7Q" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className: "my-toast",
+          }}
+        />
       </body>
     </html>
   );
