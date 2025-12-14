@@ -177,10 +177,37 @@ export default async function DatePage({ params }: Props) {
         {/* 구분선 */}
         <div className="w-8 h-px bg-[#D0D0D0] dark:bg-[#333] mx-auto"></div>
 
-        {/* 유래 및 정보 (있을 때만 표시) */}
-        {word.detail && (
-          <div className="mt-8 text-sm bg-gray-50 dark:bg-[#1e1e1e] border border-transparent dark:border-gray-800 px-4 py-3 rounded-lg inline-block break-keep">
-            💡 {word.detail}
+        {/* 순화어 및 정보 (있을 때만 표시) */}
+        {(word.detail || word.refined_word) && (
+          <div className="mt-8 text-sm bg-gray-50 dark:bg-[#1e1e1e] border border-transparent dark:border-gray-800 px-4 py-3 rounded-lg inline-block text-left break-keep">
+            {/* 순화어 */}
+            {word.refined_word && (
+              <div className="relative mb-2">
+                <span className="absolute left-0 top-0">💡</span>{" "}
+                <div className="flex justify-center font-bold">
+                  <span className="text-gray-900 dark:text-gray-100 mr-1">
+                    순화어:
+                  </span>
+                  <span
+                    className="transition-all duration-300
+                   brightness-[0.7] saturate-[1.2]
+                   dark:brightness-[1.8] dark:saturate-[1.5]"
+                    style={{ color: accentColor }}
+                  >
+                    {word.refined_word}
+                  </span>
+                </div>
+                <div className="w-8 h-px bg-[#D0D0D0] dark:bg-[#333] mx-auto mt-2"></div>
+              </div>
+            )}
+
+            {/* 설명 */}
+            {word.detail && (
+              <div className="block text-gray-700 dark:text-gray-300">
+                {!word.refined_word && <span className="mr-2">💡</span>}
+                {word.detail}
+              </div>
+            )}
           </div>
         )}
 
