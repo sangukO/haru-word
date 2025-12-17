@@ -125,13 +125,13 @@ export default function Header({
                 {/* 드롭다운 메뉴 */}
                 {isDropdownOpen && (
                   <div className="absolute right-4 mt-2 w-48 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-md shadow-lg py-1 z-50 animate-fade-in-down">
-                    {/* 내 정보 */}
+                    {/* 전체 단어 */}
                     <Link
-                      href=""
+                      href="/words"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
                       onClick={() => setIsDropdownOpen(false)}
                     >
-                      내 정보
+                      단어 검색
                     </Link>
 
                     {/* 내 단어장 */}
@@ -145,6 +145,15 @@ export default function Header({
 
                     {/* 구분선 */}
                     <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
+
+                    {/* 내 정보 */}
+                    <Link
+                      href="/profile"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      내 정보
+                    </Link>
 
                     {/* 로그아웃 */}
                     <button
@@ -239,10 +248,10 @@ export default function Header({
                 {/* 네비게이션 링크 */}
                 <nav className="flex flex-col gap-2">
                   <Link
-                    href="#"
+                    href="/words"
                     className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
                   >
-                    내 정보
+                    단어 검색
                   </Link>
                   <Link
                     href="#"
@@ -252,15 +261,23 @@ export default function Header({
                   </Link>
                 </nav>
 
-                {/* 로그아웃 버튼 */}
-                <div className="mt-auto pt-4 border-t dark:border-[#333]">
+                {/* 구분선 */}
+                <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
+                <nav className="flex flex-col gap-2">
+                  <Link
+                    href="#"
+                    className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
+                  >
+                    내 정보
+                  </Link>
+                  {/* 로그아웃 버튼 */}
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-red-500 font-medium py-2"
+                    className="flex items-center gap-2 text-red-500 font-medium py-3 px-2"
                   >
                     로그아웃
                   </button>
-                </div>
+                </nav>
               </div>
             ) : (
               // 비로그인 시
