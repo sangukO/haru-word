@@ -147,15 +147,19 @@ export default async function DatePage({ params }: Props) {
       <article className="max-w-[1200px] w-full text-center">
         {/* 카테고리 뱃지 */}
         {word.category && (
-          <div className="mb-4">
-            <span
-              className="border rounded-2xl p-1.5"
-              style={{
-                color: word.category.color ? word.category.color : "gray",
-              }}
+          <div className="flex justify-center mb-4">
+            <button
+              key={word.category.id}
+              className="py-1.5 px-2 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap border flex items-center gap-2
+                bg-white dark:bg-[#1E1E1E]"
             >
-              {word.category.name}
-            </span>
+              {/* 색상 원 */}
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: word.category.color }}
+              />
+              <span>{word.category.name}</span>
+            </button>
           </div>
         )}
 
