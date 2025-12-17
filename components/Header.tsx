@@ -101,7 +101,7 @@ export default function Header({
               <HitCounter initialView={initialView} />
             </div>
             {user ? (
-              <div ref={dropdownRef}>
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className={`
@@ -124,7 +124,7 @@ export default function Header({
 
                 {/* 드롭다운 메뉴 */}
                 {isDropdownOpen && (
-                  <div className="absolute right-4 mt-2 w-48 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-md shadow-lg py-1 z-50 animate-fade-in-down">
+                  <div className="absolute right-[-18%] top-[120%] mt-2 w-48 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-md shadow-lg py-1 z-50 animate-fade-in-down">
                     {/* 전체 단어 */}
                     <Link
                       href="/words"
@@ -249,6 +249,7 @@ export default function Header({
                 <nav className="flex flex-col gap-2">
                   <Link
                     href="/words"
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
                   >
                     단어 검색
