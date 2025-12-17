@@ -23,7 +23,7 @@ export default async function Home() {
   // Supabase에서 오늘 날짜의 단어를 가져옴
   const { data: word, error } = await supabase
     .from("words")
-    .select("*")
+    .select(`*, category: categories (name, color)`)
     .eq("date", today)
     .single();
 
@@ -97,7 +97,7 @@ export default async function Home() {
     );
   }
 
-  const accentColor = word.color ?? DEFAULT_THEME_COLOR;
+  const accentColor = word.category.color ?? DEFAULT_THEME_COLOR;
   const prevDate = offsetDate(word.date, -1);
 
   const shareText = `오늘의 단어는 '${word.word}'입니다.`;
@@ -108,6 +108,20 @@ export default async function Home() {
       <MidnightUpdater />
       <ColorSetter color={accentColor} />
       <article className="max-w-[1200px] w-full text-center">
+        {/* 카테고리 뱃지 */}
+        {word.category && (
+          <div className="mb-4">
+            <span
+              className="border rounded-2xl p-1.5"
+              style={{
+                color: word.category.color ? word.category.color : "gray",
+              }}
+            >
+              {word.category.name}
+            </span>
+          </div>
+        )}
+
         {/* 단어 제목 및 한자*/}
         <div className="mb-6">
           {word.hanja && (

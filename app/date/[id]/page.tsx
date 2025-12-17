@@ -119,7 +119,7 @@ export default async function DatePage({ params }: Props) {
   // dateStr를 사용해서 검색
   const { data: word, error } = await supabase
     .from("words")
-    .select("*")
+    .select(`*, category: categories (name, color)`)
     .eq("date", id)
     .single();
 
@@ -136,7 +136,7 @@ export default async function DatePage({ params }: Props) {
     );
   }
 
-  const accentColor = word.color ?? DEFAULT_THEME_COLOR;
+  const accentColor = word.category.color ?? DEFAULT_THEME_COLOR;
   const shareText = `${id}의 단어는 '${word.word}'입니다.`;
   // 공유할 주소도 이 날짜 페이지로 고정
   const sharePath = `/date/${id}`;
@@ -145,6 +145,20 @@ export default async function DatePage({ params }: Props) {
     <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
       <ColorSetter color={accentColor} />
       <article className="max-w-[1200px] w-full text-center">
+        {/* 카테고리 뱃지 */}
+        {word.category && (
+          <div className="mb-4">
+            <span
+              className="border rounded-2xl p-1.5"
+              style={{
+                color: word.category.color ? word.category.color : "gray",
+              }}
+            >
+              {word.category.name}
+            </span>
+          </div>
+        )}
+
         {/* 단어 제목 및 한자*/}
         <div className="mb-6">
           {word.hanja && (
