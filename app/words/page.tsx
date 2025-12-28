@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { getTodayDate } from "@/utils/date";
 
 type Category = {
   id: string;
@@ -20,7 +21,7 @@ type Word = {
   date: string;
 };
 
-export default function WordsPage() {
+function WordsList() {
   const supabase = createClient();
 
   // 검색 파라미터에서 초기 검색어 가져오기
@@ -55,6 +56,8 @@ export default function WordsPage() {
     const fetchWords = async () => {
       setIsLoading(true);
 
+      const today = getTodayDate();
+
       let query = supabase
         .from("words")
         .select(
@@ -67,6 +70,7 @@ export default function WordsPage() {
           )
         `
         )
+        .lte("date", today) // 오늘 이전 단어만
         .order("date", { ascending: false }); // 최신순 정렬
 
       // 카테고리 필터
@@ -79,13 +83,19 @@ export default function WordsPage() {
         query = query.ilike("word", `%${searchTerm}%`);
       }
 
-      const { data, error } = await query;
+      // 쿼리 실행 및 최소 로딩 시간 보장
+      const [result] = await Promise.all([
+        query,
+        new Promise((resolve) => setTimeout(resolve, 300)), // 최소 로딩 시간
+      ]);
+
+      const { data, error } = result;
 
       if (!error && data) {
         setWords(data as any); // 타입 단언
       }
 
-      setTimeout(() => setIsLoading(false), 1000);
+      setIsLoading(false);
     };
 
     // 검색어 입력 시 디바운싱
@@ -247,5 +257,13 @@ export default function WordsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function WordsPage() {
+  return (
+    <Suspense>
+      <WordsList />
+    </Suspense>
   );
 }
