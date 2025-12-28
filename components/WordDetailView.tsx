@@ -3,6 +3,7 @@ import ColorSetter from "@/components/ColorSetter";
 import ShareButton from "@/components/ShareButton";
 import PageLoginSection from "@/components/PageLoginSection";
 import { DEFAULT_THEME_COLOR } from "@/constants/theme";
+import { getTodayDate } from "@/utils/date";
 
 // 필요한 데이터 타입 정의
 type Category = {
@@ -39,6 +40,9 @@ export default function WordDetailView({
   const accentColor = word.category?.color ?? DEFAULT_THEME_COLOR;
   const shareText = `${word.date}의 단어는 '${word.word}'입니다.`;
   const sharePath = `/words/${word.id}`;
+
+  const today = getTodayDate();
+  const isToday = word.date === today;
 
   return (
     <article className="max-w-[1200px] w-full text-center">
@@ -151,12 +155,16 @@ export default function WordDetailView({
         )}
 
         {/* 메인으로 가기 */}
-        <Link
-          href="/"
-          className="text-xs text-sub underline underline-offset-4"
-        >
-          오늘
-        </Link>
+        {!isToday ? (
+          <Link
+            href="/"
+            className="text-xs text-sub underline underline-offset-4"
+          >
+            오늘
+          </Link>
+        ) : (
+          <div className="w-8"></div>
+        )}
 
         {/* 다음 버튼 */}
         {nextWord ? (
