@@ -58,3 +58,11 @@ export async function getNextWord(
     .limit(1)
     .single();
 }
+
+// 카테고리 목록 가져오기
+export async function getCategories(supabase: SupabaseClient) {
+  return await supabase
+    .from("categories")
+    .select("*")
+    .order("sort_order", { ascending: true });
+}

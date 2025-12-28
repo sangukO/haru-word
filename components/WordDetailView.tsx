@@ -4,31 +4,14 @@ import ShareButton from "@/components/ShareButton";
 import PageLoginSection from "@/components/PageLoginSection";
 import { DEFAULT_THEME_COLOR } from "@/constants/theme";
 import { getTodayDate } from "@/utils/date";
+import { Word } from "@/types";
 
 // 필요한 데이터 타입 정의
-type Category = {
-  id: string;
-  name: string;
-  color: string;
-};
-
-type Word = {
-  id: number;
-  word: string;
-  meaning: string;
-  hanja?: string;
-  example: string;
-  refined_word?: string;
-  detail?: string;
-  date: string;
-  category: Category | null;
-};
-
 interface WordDetailViewProps {
   word: Word;
-  prevWord?: { id: number; date: string } | null; // 이전 글 정보
-  nextWord?: { id: number; date: string } | null; // 다음 글 정보
-  user: any; // Supabase user type
+  prevWord?: { id: number; date: string } | null;
+  nextWord?: { id: number; date: string } | null;
+  user: any;
 }
 
 export default function WordDetailView({
