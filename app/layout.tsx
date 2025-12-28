@@ -20,19 +20,20 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://haruword.com"),
   title: {
     template: "%s | 하루단어",
-    default: "하루단어 | 오늘의 어휘",
+    default: "하루단어 | 직장인을 위한 오늘의 어휘",
   },
   description:
     "매일 자정, 당신의 일상에 지적인 결을 더합니다. 바쁜 성인을 위한 하루 한 단어 큐레이션 서비스.",
   keywords: [
     "하루단어",
-    "오늘의단어",
+    "오늘의 단어",
+    "직장인 어휘",
     "어휘력",
     "문해력",
     "사자성어",
     "순우리말",
-    "직장인자기계발",
     "단어장",
+    "상식",
     "맞춤법",
   ],
   authors: [{ name: "OSOSO" }],
@@ -42,10 +43,9 @@ export const metadata: Metadata = {
   },
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
   openGraph: {
-    title: "오늘 당신의 어휘는 안녕하신가요? 📩",
-    description:
-      "하루 딱 하나, 부담 없이 채우는 어른의 문해력 습관. 오늘의 단어를 확인해보세요.",
-    siteName: "하루단어 (Haru Word)",
+    title: "하루단어",
+    description: "매일 하나씩 쌓이는 교양, 하루단어",
+    siteName: "하루단어",
     locale: "ko_KR",
     type: "website",
     url: "https://haryword.com",
@@ -77,6 +77,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // JSON-LD 구조화 데이터 설정
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "하루단어",
+    url: "https://haruword.com",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://haruword.com/words?term={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   // 서버에서 유저 정보 확인
   const supabase = await createClient();
   const {
@@ -105,6 +118,10 @@ export default async function RootLayout({
       <body
         className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Header
           user={user}
           todayFormatted={todayFormatted}

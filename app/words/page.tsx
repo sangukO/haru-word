@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Category = {
   id: string;
@@ -21,12 +22,19 @@ type Word = {
 
 export default function WordsPage() {
   const supabase = createClient();
+
+  // 검색 파라미터에서 초기 검색어 가져오기
+  const searchParams = useSearchParams();
+  const initialTerm = searchParams.get("term") || "";
+
   const [words, setWords] = useState<Word[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   // 필터
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // 검색어
+  const [searchTerm, setSearchTerm] = useState<string>(initialTerm);
   const [isLoading, setIsLoading] = useState(true);
 
   // 카테고리 목록 가져오기 (순서 정렬)
