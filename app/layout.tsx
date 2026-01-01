@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
-import Link from "next/link";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import HitCounter from "@/components/HitCounter";
-import { supabase } from "@/utils/supabase";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { createClient } from "@/utils/supabase/server";
+import { Toaster } from "sonner";
+import AuthCleanup from "@/components/AuthCleanup";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -20,32 +22,32 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://haruword.com"),
   title: {
     template: "%s | 하루단어",
-    default: "하루단어 | 오늘의 어휘",
+    default: "하루단어 | 직장인을 위한 오늘의 어휘",
   },
   description:
     "매일 자정, 당신의 일상에 지적인 결을 더합니다. 바쁜 성인을 위한 하루 한 단어 큐레이션 서비스.",
   keywords: [
     "하루단어",
-    "오늘의단어",
+    "오늘의 단어",
+    "직장인 어휘",
     "어휘력",
     "문해력",
     "사자성어",
     "순우리말",
-    "직장인자기계발",
     "단어장",
+    "상식",
     "맞춤법",
   ],
   authors: [{ name: "OSOSO" }],
   creator: "OSOSO",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
   openGraph: {
-    title: "오늘 당신의 어휘는 안녕하신가요? 📩",
-    description:
-      "하루 딱 하나, 부담 없이 채우는 어른의 문해력 습관. 오늘의 단어를 확인해보세요.",
-    siteName: "하루단어 (Haru Word)",
+    title: "하루단어",
+    description: "매일 하나씩 쌓이는 교양, 하루단어",
+    siteName: "하루단어",
     locale: "ko_KR",
     type: "website",
     url: "https://haryword.com",
@@ -77,6 +79,25 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // JSON-LD 구조화 데이터 설정
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "하루단어",
+    url: "https://haruword.com",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://haruword.com/words?term={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  // 서버에서 유저 정보 확인
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const todayFormatted = getFormattedDate();
 
   // 서버에서 방문자 수 가져오기
@@ -99,29 +120,25 @@ export default async function RootLayout({
       <body
         className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
-        <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-[#121212]">
-          <div className="max-w-[1200px] mx-auto px-6 h-16 grid grid-cols-3 items-center border-b border-black dark:border-[#A0A0A0]">
-            <div
-              suppressHydrationWarning={true}
-              className="text-left text-sm font-medium tracking-widest text-[#111111] dark:text-[#F1F1F1]"
-            >
-              {todayFormatted}
-            </div>
-            <h1 className="text-center text-lg font-bold tracking-tight cursor-pointer">
-              <Link href="/">하루단어</Link>
-            </h1>
-            <div className="text-right">
-              <div className="w-full h-6 inline-block">
-                <HitCounter initialView={initialView} />
-              </div>
-            </div>
-          </div>
-        </header>
+        <AuthCleanup />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <Header
+          user={user}
+          todayFormatted={todayFormatted}
+          initialView={initialView}
+        />
         {children}
-        <footer className="w-full text-center text-xs py-6 mt-auto text-sub">
-          © 2025 Haru Word. All rights reserved. Created by OSOSO.
-        </footer>
+        <Footer />
         <GoogleAnalytics gaId="G-782YRDQX7Q" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className: "my-toast",
+          }}
+        />
       </body>
     </html>
   );
