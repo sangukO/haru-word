@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     if (!error) {
       // 리다이렉트 응답 객체
-      const response = NextResponse.redirect(`${origin}${next}`);
+      const response = NextResponse.redirect(`${origin}${next}?login=success`);
 
       // 웰컴 메시지
       response.cookies.set("welcome-toast", "true", {

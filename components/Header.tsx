@@ -16,10 +16,11 @@ interface HeaderProps {
 }
 
 export default function Header({
-  user,
+  user: initialUser,
   todayFormatted,
   initialView,
 }: HeaderProps) {
+  const [user, setUser] = useState<User | null>(initialUser);
   const supabase = createClient();
   const router = useRouter();
 
@@ -28,17 +29,37 @@ export default function Header({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const hasWelcomeCookie = document.cookie.includes("welcome-toast=true");
+    setUser(initialUser);
+  }, [initialUser]);
 
-    if (hasWelcomeCookie && user) {
-      setTimeout(() => {
-        toast.success(`반갑습니다, ${user.user_metadata.full_name}님!`, {
-          description: "오늘도 하루 단어를 채워보세요.",
-          icon: "👋",
-        });
-      }, 300);
-    }
-  }, [user]);
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+      } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        setUser(session?.user ?? null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  // useEffect(() => {
+  //   const hasWelcomeCookie = document.cookie.includes("welcome-toast=true");
+
+  //   if (hasWelcomeCookie && user) {
+  //     setTimeout(() => {
+  //       toast.success(`반갑습니다, ${user.user_metadata.full_name}님!`, {
+  //         description: "오늘도 하루 단어를 채워보세요.",
+  //         icon: "👋",
+  //       });
+  //     }, 300);
+  //   }
+  // }, [user]);
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -125,7 +146,7 @@ export default function Header({
                 {/* 드롭다운 메뉴 */}
                 {isDropdownOpen && (
                   <div className="absolute right-[-18%] top-[120%] mt-2 w-48 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-md shadow-lg py-1 z-50 animate-fade-in-down">
-                    {/* 전체 단어 */}
+                    {/* 단어 검색 */}
                     <Link
                       href="/words"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
@@ -135,20 +156,20 @@ export default function Header({
                     </Link>
 
                     {/* 내 단어장 */}
-                    <Link
+                    {/* <Link
                       href=""
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
                       onClick={() => setIsDropdownOpen(false)}
                     >
                       내 단어장
-                    </Link>
+                    </Link> */}
 
                     {/* 구분선 */}
                     <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
 
                     {/* 내 정보 */}
                     <Link
-                      href="/profile"
+                      href="/mypage"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
                       onClick={() => setIsDropdownOpen(false)}
                     >
@@ -233,7 +254,7 @@ export default function Header({
                   {user.user_metadata.avatar_url && (
                     <img
                       src={user.user_metadata.avatar_url}
-                      alt="Profile"
+                      alt="mypage"
                       className="w-10 h-10 rounded-full"
                     />
                   )}

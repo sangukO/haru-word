@@ -121,7 +121,7 @@ export default function WordDetailView({
         <ShareButton text={shareText} url={sharePath} />
       </div>
 
-      <PageLoginSection user={user} />
+      {/* <PageLoginSection user={user} /> */}
 
       {/* 네비게이션 */}
       <nav className="flex justify-between items-center pt-8 text-sm">
