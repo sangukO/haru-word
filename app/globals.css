@@ -7,6 +7,13 @@
     --title: #111111; /* 제목 색상 */
     --text: #444444; /* 본문 텍스트 색상 */
     --text-sub: #888888; /* 날짜, 푸터 등 연회색 */
+
+    --toast-bg-start: rgba(255, 255, 255, 0.8);
+    --toast-bg-end: rgba(255, 255, 255, 0.5);
+
+    --toast-border: rgba(255, 255, 255, 0.6);
+    --toast-text: #111111;
+    --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -15,6 +22,13 @@
       --title: #f1f1f1;
       --text: #d0d0d0;
       --text-sub: #888888;
+
+      --toast-bg-start: rgba(40, 40, 40, 0.7);
+      --toast-bg-end: rgba(40, 40, 40, 0.4);
+
+      --toast-border: rgba(255, 255, 255, 0.15);
+      --toast-text: #ffffff;
+      --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
   }
 
@@ -53,5 +67,46 @@
   .font-sans {
     font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
       system-ui, Roboto, sans-serif !important;
+  }
+}
+
+/* 토스트 메시지 스타일 */
+[data-sonner-toast] {
+  background: rgba(255, 255, 255, 0.5) !important;
+  color: #000000 !important;
+
+  -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
+  backdrop-filter: blur(5px) saturate(180%) !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+
+  border-radius: 24px !important;
+  font-family: var(--font-pretendard), sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-sonner-toast] {
+    background: rgba(20, 20, 20, 0.8) !important;
+    color: #ffffff !important;
+
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+
+    border: 1px solid color-mix(in srgb, var(--neon-color), black 60%) !important;
+
+    box-shadow: 0 0 15px color-mix(in srgb, var(--neon-color), black 60%),
+      inset 0 0 5px color-mix(in srgb, var(--neon-color), black 60%),
+      0 8px 32px rgba(0, 0, 0, 0.5) !important;
+
+    font-family: var(--font-pretendard), sans-serif !important;
+  }
+
+  [data-sonner-toast] [data-description] {
+    color: #c9c9c9 !important;
   }
 }
