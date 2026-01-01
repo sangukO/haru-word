@@ -4,6 +4,7 @@ import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "sonner";
 
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   authors: [{ name: "OSOSO" }],
   creator: "OSOSO",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
   openGraph: {
@@ -128,9 +129,7 @@ export default async function RootLayout({
           initialView={initialView}
         />
         {children}
-        <footer className="w-full text-center text-xs py-6 mt-auto text-sub">
-          © 2025 Haru Word. All rights reserved. Created by OSOSO.
-        </footer>
+        <Footer />
         <GoogleAnalytics gaId="G-782YRDQX7Q" />
         <Toaster
           position="top-center"
