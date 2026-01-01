@@ -48,19 +48,6 @@ export default function Header({
     };
   }, [supabase]);
 
-  // useEffect(() => {
-  //   const hasWelcomeCookie = document.cookie.includes("welcome-toast=true");
-
-  //   if (hasWelcomeCookie && user) {
-  //     setTimeout(() => {
-  //       toast.success(`반갑습니다, ${user.user_metadata.full_name}님!`, {
-  //         description: "오늘도 하루 단어를 채워보세요.",
-  //         icon: "👋",
-  //       });
-  //     }, 300);
-  //   }
-  // }, [user]);
-
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -156,13 +143,13 @@ export default function Header({
                     </Link>
 
                     {/* 내 단어장 */}
-                    {/* <Link
-                      href=""
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
+                    <Link
+                      href="/wordbook"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
                       onClick={() => setIsDropdownOpen(false)}
                     >
                       내 단어장
-                    </Link> */}
+                    </Link>
 
                     {/* 구분선 */}
                     <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
