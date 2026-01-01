@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "sonner";
+import AuthCleanup from "@/components/AuthCleanup";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -119,6 +120,7 @@ export default async function RootLayout({
       <body
         className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
       >
+        <AuthCleanup />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
