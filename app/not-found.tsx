@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6 text-center h-[calc(100vh-64px)]">
+    <main className="flex flex-1 flex-col items-center justify-center px-6 text-center">
       <div className="space-y-6">
-        <div className="text-8xl animate-[bounce_3s_infinite]">😵‍💫</div>
+        <div className="text-7xl mb-6">😵‍💫</div>
 
         <h1 className="text-3xl font-bold text-[#111111] dark:text-[#F1F1F1]">
           길을 잃으셨나요?
@@ -21,7 +21,7 @@ export default function NotFound() {
           </p>
         </div>
 
-        {/* 홈으로 가는 버튼 */}
+        {/* 홈으로 이동 */}
         <div className="pt-8">
           <Link
             href="/"

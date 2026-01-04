@@ -76,7 +76,7 @@ export default function WordsList({ initialCategories }: Props) {
   }, [selectedCategory, searchTerm]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 pt-24 pb-12">
+    <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-12">
       {/* 헤더 및 검색창 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">단어 검색 🔎</h1>

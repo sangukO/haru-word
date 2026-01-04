@@ -41,7 +41,7 @@ export default async function MyPage() {
   }
 
   return (
-    <main className="flex flex-1 flex-col w-full max-w-5xl mx-auto px-6 pt-24">
+    <main className="flex flex-1 flex-col w-full max-w-5xl mx-auto px-6 pt-8">
       <h1 className="text-3xl font-bold mb-10 text-center text-gray-900 dark:text-white">
         내 정보
       </h1>
