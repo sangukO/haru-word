@@ -89,6 +89,7 @@
   font-weight: 500 !important;
 }
 
+/* 토스트 메시지 다크모드 스타일 */
 @media (prefers-color-scheme: dark) {
   [data-sonner-toast] {
     background: rgba(20, 20, 20, 0.8) !important;
@@ -109,4 +110,26 @@
   [data-sonner-toast] [data-description] {
     color: #c9c9c9 !important;
   }
+}
+
+/* 가변 폰트 전용 굵기 웨이브 */
+@keyframes variableWave {
+  0%,
+  100% {
+    font-weight: 100; /* 아주 얇게 */
+  }
+  50% {
+    font-weight: 900; /* 아주 두껍게 */
+  }
+}
+
+/* 마우스 올리면 움직임 */
+.variable-font-char {
+  animation: variableWave 1.5s infinite ease-in-out;
+  animation-play-state: paused;
+}
+
+/* 부모(.group)에 마우스 올리면 자식 애니메이션 시작 */
+.group:hover .variable-font-char {
+  animation-play-state: running;
 }
