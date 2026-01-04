@@ -144,7 +144,7 @@ export default function WordsList({ initialCategories }: Props) {
       <div className="flex flex-wrap gap-2 mb-8 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setSelectedCategory("all")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
             selectedCategory === "all"
               ? "bg-black text-white dark:bg-white dark:text-black"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-gray-300 hover:dark:text-gray-600"
@@ -158,7 +158,7 @@ export default function WordsList({ initialCategories }: Props) {
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
               selectedCategory === cat.id
                 ? "bg-white dark:bg-[#1E1E1E]"
                 : "bg-white dark:bg-[#1E1E1E] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] border-[#e4e4e4] dark:border-[#313131]"
