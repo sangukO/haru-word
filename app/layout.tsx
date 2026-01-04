@@ -101,19 +101,20 @@ export default async function RootLayout({
   const todayFormatted = getFormattedDate();
 
   // 서버에서 방문자 수 가져오기
-  let initialView = 0;
-  try {
-    const { data } = await supabase
-      .from("site_stats")
-      .select("total_views")
-      .single();
+  // 추후 필요 시 사용
+  // let initialView = 0;
+  // try {
+  //   const { data } = await supabase
+  //     .from("site_stats")
+  //     .select("total_views")
+  //     .single();
 
-    if (data) {
-      initialView = data.total_views;
-    }
-  } catch (error) {
-    console.error("Counter Fetch Error:", error);
-  }
+  //   if (data) {
+  //     initialView = data.total_views;
+  //   }
+  // } catch (error) {
+  //   console.error("Counter Fetch Error:", error);
+  // }
 
   return (
     <html lang="ko">
@@ -125,12 +126,8 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Header
-          user={user}
-          todayFormatted={todayFormatted}
-          initialView={initialView}
-        />
-        {children}
+        <Header user={user} todayFormatted={todayFormatted} />
+        <main className="flex-1 flex flex-col w-full">{children}</main>
         <Footer />
         <GoogleAnalytics gaId="G-782YRDQX7Q" />
         <Toaster
