@@ -136,14 +136,14 @@ export default function Header({
                   onClick={handleLogout}
                   className="font-bold hover:underline cursor-pointer"
                 >
-                  LOG OUT
+                  로그아웃
                 </button>
               ) : (
                 <Link
                   href="/login"
                   className="font-bold hover:underline cursor-pointer"
                 >
-                  LOG IN
+                  로그인
                 </Link>
               )}
             </div>
@@ -191,9 +191,11 @@ export default function Header({
       >
         <div className="max-w-[1200px] mx-auto px-6 h-14 flex items-center justify-between">
           {/* 왼쪽 로고 */}
-          <Link href="/" className="md:hidden flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <img src="/icon.png" alt="하루단어 로고" className="w-7 h-7" />
-            <span className="text-lg font-bold">하루단어</span>
+            <span className="text-lg font-bold text-black dark:text-white">
+              하루단어
+            </span>
           </Link>
 
           {/* 중앙: 네비게이션 (데스크탑) */}
@@ -202,7 +204,7 @@ export default function Header({
               <Link
                 key={link.name}
                 href={link.href}
-                className="hover:text-gray-500 transition-colors"
+                className="text-black dark:text-white hover:text-gray-500 transition-colors"
               >
                 {link.name}
               </Link>
@@ -225,7 +227,7 @@ export default function Header({
               ) : (
                 <Link
                   href="/login"
-                  className="text-sm font-medium px-3 py-1 rounded-sm hover:underline hover:font-extrabold transition-all"
+                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white transition-all"
                 >
                   로그인
                 </Link>
