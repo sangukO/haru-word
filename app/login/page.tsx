@@ -1,6 +1,6 @@
 "use client";
 
-import LoginButton from "@/components/LoginButton"; // 기존 버튼 재사용
+import LoginCard from "@/components/LoginCard";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -14,38 +14,8 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* 로그인 버튼 */}
-      <div className="w-full max-w-sm bg-gray-50 dark:bg-[#1E1E1E] p-8 rounded-2xl border border-gray-200 dark:border-[#333] shadow-lg text-center">
-        <p className="text-xs text-gray-400 mb-6 font-medium">
-          3초 만에 간편하게 시작하기
-        </p>
-
-        <div className="flex justify-center">
-          <LoginButton
-            text="Google 계정으로 시작하기"
-            className="w-full flex justify-center items-center py-3 text-sm"
-          />
-        </div>
-
-        {/* 하단 안내 */}
-        <div className="mt-6 text-[10px] text-gray-400">
-          로그인 시{" "}
-          <Link
-            href="/terms"
-            className="underline hover:text-gray-600 dark:hover:text-gray-300"
-          >
-            이용약관
-          </Link>{" "}
-          및{" "}
-          <Link
-            href="/privacy"
-            className="underline hover:text-gray-600 dark:hover:text-gray-300"
-          >
-            개인정보처리방침
-          </Link>
-          에 동의하게 됩니다.
-        </div>
-      </div>
+      {/* 로그인 카드 */}
+      <LoginCard />
 
       {/* 홈으로 돌아가기 */}
       <div className="mt-8">
