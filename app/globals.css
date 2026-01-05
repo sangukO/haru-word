@@ -32,6 +32,11 @@
     }
   }
 
+  html {
+    /* 스크롤바 자리 미리 확보 */
+    scrollbar-gutter: stable;
+  }
+
   body {
     /* 기본 배경 및 텍스트 색상 설정 */
     background-color: var(--background);
@@ -50,6 +55,17 @@
   h5,
   h6 {
     color: var(--title);
+  }
+
+  /* 커스텀 스크롤바 스타일 */
+  ::-webkit-scrollbar {
+    width: 15px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full border-[3px] border-solid border-transparent bg-clip-content;
   }
 }
 
