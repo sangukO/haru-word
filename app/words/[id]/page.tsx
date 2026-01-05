@@ -98,7 +98,7 @@ export default async function WordDetailPage({ params }: Props) {
   ]);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
+    <main className="flex flex-1 flex-col items-center px-6">
       <WordDetailView
         word={word as any} // Supabase 타입 이슈 회피용 assertion
         prevWord={prevResult.data}

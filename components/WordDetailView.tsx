@@ -30,7 +30,50 @@ export default function WordDetailView({
   return (
     <article className="max-w-[1200px] w-full text-center">
       <ColorSetter color={accentColor} />
+      {/* 네비게이션 */}
+      <nav className="grid grid-cols-3 items-center pt-4 pb-4 text-sm w-full">
+        {/* 왼쪽 영역 */}
+        <div className="justify-self-start">
+          {prevWord ? (
+            <Link
+              href={`/words/${prevWord.id}`}
+              className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              ← {prevWord.date.slice(5)}
+            </Link>
+          ) : (
+            <div className="w-10"></div>
+          )}
+        </div>
 
+        {/* 가운데 영역 */}
+        <div className="justify-self-center">
+          {!isToday ? (
+            <Link
+              href="/"
+              className="text-xs text-sub hover:underline hover:font-extrabold underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              오늘
+            </Link>
+          ) : (
+            <div className="w-8"></div>
+          )}
+        </div>
+
+        {/* 오른쪽 영역 */}
+        <div className="justify-self-end">
+          {nextWord ? (
+            <Link
+              href={`/words/${nextWord.id}`}
+              className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              {nextWord.date.slice(5)} →
+            </Link>
+          ) : (
+            <div className="w-10"></div>
+          )}
+        </div>
+      </nav>
       {/* 카테고리 뱃지 */}
       {word.category && (
         <div className="flex justify-center mb-4">
@@ -122,45 +165,6 @@ export default function WordDetailView({
       </div>
 
       {/* <PageLoginSection user={user} /> */}
-
-      {/* 네비게이션 */}
-      <nav className="flex justify-between items-center pt-8 text-sm">
-        {/* 이전 버튼 */}
-        {prevWord ? (
-          <Link
-            href={`/words/${prevWord.id}`}
-            className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-          >
-            ← {prevWord.date.slice(5)}
-          </Link>
-        ) : (
-          <div className="w-10"></div>
-        )}
-
-        {/* 메인으로 가기 */}
-        {!isToday ? (
-          <Link
-            href="/"
-            className="text-xs text-sub underline underline-offset-4"
-          >
-            오늘
-          </Link>
-        ) : (
-          <div className="w-8"></div>
-        )}
-
-        {/* 다음 버튼 */}
-        {nextWord ? (
-          <Link
-            href={`/words/${nextWord.id}`}
-            className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-          >
-            {nextWord.date.slice(5)} →
-          </Link>
-        ) : (
-          <div className="w-10"></div>
-        )}
-      </nav>
     </article>
   );
 }

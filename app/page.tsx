@@ -90,7 +90,7 @@ export default async function Home() {
   const { data: prevWord } = await getPrevWord(supabase, word.date);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6 pt-24">
+    <main className="flex flex-1 flex-col items-center px-6">
       <MidnightUpdater />
       <WordDetailView
         word={word as any}

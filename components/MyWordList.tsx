@@ -3,91 +3,65 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { getTodayDate } from "@/utils/date";
 import { Category, Word } from "@/types";
 import WordCard from "./WordCard";
 
-// props로 초기 카테고리를 받음
 interface Props {
   initialCategories: Category[];
-  userId?: string;
+  userId: string;
   initialWords: Word[];
-  initialBookmarkedIds: number[];
 }
 
-export default function WordsList({
+export default function MyWordList({
   initialCategories,
   userId,
   initialWords,
-  initialBookmarkedIds,
 }: Props) {
   const supabase = createClient();
-  const searchParams = useSearchParams();
 
-  // 검색 파라미터에서 초기 검색어 가져오기
-  const initialTerm = searchParams.get("term") || "";
-  const initialCategoryParam = searchParams.get("category") || "all";
-
-  // 초기값으로 props를 바로 사용
-  const [words, setWords] = useState<Word[]>(initialWords);
   const [categories] = useState<Category[]>(initialCategories);
 
-  // URL 파라미터 기반 초기 카테고리 설정
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>(initialCategoryParam);
+  // 단어 목록 상태 관리
+  const [words, setWords] = useState<Word[]>(initialWords);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // 검색어
-  const [searchTerm, setSearchTerm] = useState<string>(initialTerm);
-
-  // 초기 데이터가 있으므로 로딩은 false로 설정
+  // 초기 북마크 단어들이 있으므로 false로 로딩 상태 시작
   const [isLoading, setIsLoading] = useState(false);
 
-  // 북마크
-  const [myBookmarkedIds, setMyBookmarkedIds] =
-    useState<number[]>(initialBookmarkedIds);
-
-  // 헤더 타이틀
-  const [headerTitle, setHeaderTitle] = useState(
-    initialTerm || initialCategoryParam !== "all"
-      ? "검색 결과"
-      : "전체 수록 단어"
-  );
-
-  // 단어 목록 가져오기
+  // 내 단어장 데이터 가져오기
   useEffect(() => {
-    // 초기 로드인지 확인 후 현재 필터 상태가 초기 데이터와 일치하면 패스
-    const isInitialLoad =
-      words === initialWords &&
-      selectedCategory === initialCategoryParam &&
-      searchTerm === initialTerm;
-
-    if (isInitialLoad) {
-      return;
-    }
-
-    const fetchWords = async () => {
+    const fetchMyWords = async () => {
       setIsLoading(true);
 
-      const today = getTodayDate();
-
+      // 북마크 테이블 조회
+      // !inner를 사용하여 조인된 word 테이블 기준으로 필터링
       let query = supabase
-        .from("words")
-        .select(`*, categories (id, name, color)`)
-        .lte("date", today)
-        .order("date", { ascending: false });
+        .from("bookmarks")
+        .select(
+          `
+          id,
+          created_at,
+          word:words!inner (
+            *,
+            categories (id, name, color)
+          )
+        `
+        )
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false }); // 최신 저장순
 
-      // 카테고리 필터
+      // 카테고리 필터 (조인된 word 테이블의 category 컬럼 필터링)
       if (selectedCategory !== "all") {
-        query = query.eq("category", selectedCategory);
+        query = query.eq("word.category", selectedCategory);
       }
 
       // 검색어 필터
       if (searchTerm) {
-        query = query.ilike("word", `%${searchTerm}%`);
+        query = query.ilike("word.word", `%${searchTerm}%`);
       }
 
-      // 쿼리 실행 및 최소 로딩 시간 보장
+      // 최소 로딩 시간 보장
       const [result] = await Promise.all([
         query,
         new Promise((resolve) => setTimeout(resolve, 300)),
@@ -96,32 +70,36 @@ export default function WordsList({
       const { data, error } = result;
 
       if (!error && data) {
-        setWords(data as any); // 타입 단언
-
-        setHeaderTitle(
-          searchTerm || selectedCategory !== "all"
-            ? "검색 결과"
-            : "전체 수록 단어"
-        );
+        // 북마크 객체에서 word 정보만 추출하여 상태 업데이트
+        const extractedWords = (data as any[]).map((item) => item.word);
+        setWords(extractedWords);
       }
 
       setIsLoading(false);
     };
 
-    // 검색어 입력 시 디바운싱
-    const timeoutId = setTimeout(() => {
-      fetchWords();
-    }, 300);
+    const isInitialRender =
+      words === initialWords && selectedCategory === "all" && !searchTerm;
 
-    return () => clearTimeout(timeoutId);
-  }, [selectedCategory, searchTerm]);
+    // 첫 렌더링 시에는 이미 초기 단어들이 있으므로 패스
+    if (!isInitialRender) {
+      const timeoutId = setTimeout(() => {
+        fetchMyWords();
+      }, 300);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [selectedCategory, searchTerm, userId]);
+
+  const handleRemoveWord = (wordId: number) => {
+    // 현재 단어 배열에서 해당 ID를 가진 단어만 빼고 다시 설정
+    setWords((prevWords) => prevWords.filter((w) => w.id !== wordId));
+  };
 
   return (
     <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-12">
       {/* 헤더 및 검색창 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold">단어 검색 🔎</h1>
-
+        <h1 className="text-3xl font-bold">내 단어장 📒</h1>
         <div className="flex items-center w-full md:w-72 px-4 py-2.5 border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-black transition-all">
           <svg
             className="h-5 w-5 text-gray-400 mr-3"
@@ -143,31 +121,10 @@ export default function WordsList({
             onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-1 bg-transparent border-none outline-none text-sm placeholder-gray-400 text-gray-900 dark:text-white"
           />
-          {isLoading ? (
-            <svg
-              className="animate-spin h-5 w-5 text-gray-400 ml-2"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          ) : searchTerm ? (
+          {searchTerm && (
             <button
               onClick={() => setSearchTerm("")}
-              className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              className="ml-2 text-gray-400 hover:text-gray-600"
             >
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -177,29 +134,28 @@ export default function WordsList({
                 />
               </svg>
             </button>
-          ) : null}
+          )}
         </div>
       </div>
 
-      {/* 카테고리 필터 버튼 */}
+      {/* 카테고리 필터 */}
       <div className="flex flex-wrap gap-2 mb-8 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setSelectedCategory("all")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
             selectedCategory === "all"
               ? "bg-black text-white dark:bg-white dark:text-black"
-              : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-gray-300 hover:dark:text-gray-600"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-gray-300"
           }`}
         >
           전체 보기
         </button>
 
-        {/* props로 받은 categories 사용 */}
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 ${
               selectedCategory === cat.id
                 ? "bg-white dark:bg-[#1E1E1E]"
                 : "bg-white dark:bg-[#1E1E1E] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] border-[#e4e4e4] dark:border-[#313131]"
@@ -225,25 +181,34 @@ export default function WordsList({
 
       <div className="flex w-full justify-between items-center mb-4">
         <p className="text-lg font-medium">
-          {headerTitle}{" "}
+          저장된 단어{" "}
           <span className="font-bold text-black dark:text-white">
             {words.length}
           </span>
           개
         </p>
+        <span className="text-sm text-gray-500">최근 저장순</span>
       </div>
 
-      {/* 단어 목록 그리드 */}
+      {/* 목록 그리드 */}
       {isLoading ? (
         <div className="text-center py-20">
-          {/* 로딩 UI */}
           <div className="flex flex-row justify-center items-center gap-2 text-gray-500">
-            <span className="animate-spin">⏳</span> 검색 중입니다...
+            <span className="animate-spin">⏳</span> 단어장을 불러오는 중...
           </div>
         </div>
       ) : words.length === 0 ? (
-        <div className="text-center py-20 rounded-xl">
-          검색 결과가 없습니다. 🤔
+        <div className="text-center py-20 rounded-xl bg-gray-50 dark:bg-[#1E1E1E] border border-dashed border-gray-300 dark:border-[#333]">
+          <p className="text-lg font-medium mb-2">저장된 단어가 없습니다.</p>
+          <p className="text-gray-500 text-sm">
+            마음에 드는 단어를 발견하면 북마크 버튼을 눌러보세요!
+          </p>
+          <Link
+            href="/words"
+            className="inline-block mt-4 text-blue-500 hover:underline text-sm font-medium"
+          >
+            단어 목록 보러 가기 →
+          </Link>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -252,8 +217,9 @@ export default function WordsList({
               key={word.id}
               word={word}
               userId={userId}
-              // 내 북마크 리스트에 이 단어 ID가 있으면 true
-              isBookmarked={myBookmarkedIds.includes(word.id)}
+              /* 내 단어장은 항상 저장된 상태이므로 true 고정 */
+              isBookmarked={true}
+              onRemove={handleRemoveWord}
             />
           ))}
         </div>

@@ -13,21 +13,21 @@ const roboto = Roboto({
 
 interface LoginButtonProps {
   text?: string;
+  nextUrl?: string;
   className?: string;
 }
 
 export default function LoginButton({
   text = "Google 계정으로 시작하기",
+  nextUrl = "/",
   className = "",
 }: LoginButtonProps) {
-  const pathname = usePathname();
-
   // 로그인 끝나면 현재 주소로 돌아옴
   const handleLogin = async () => {
     const supabase = createClient();
     const redirectTo =
       typeof window !== "undefined"
-        ? `${location.origin}/auth/callback?next=${pathname}`
+        ? `${location.origin}/auth/callback?next=${nextUrl}`
         : "";
 
     // 쿠키에 세션 저장

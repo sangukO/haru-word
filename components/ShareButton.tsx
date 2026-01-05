@@ -44,7 +44,7 @@ export default function ShareButton({ text, url }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs text-sub hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs text-sub hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
       aria-label="공유하기"
     >
       {/* 공유 아이콘 (SVG) */}
