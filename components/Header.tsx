@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import HitCounter from "@/components/HitCounter";
 import LoginButton from "./LoginButton";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -10,56 +9,47 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface HeaderProps {
-  user: User | null; // 레이아웃에서 전달된 사용자 정보
+  user: User | null;
   todayFormatted: string;
-  initialView: number;
 }
 
 export default function Header({
   user: initialUser,
   todayFormatted,
-  initialView,
 }: HeaderProps) {
   const [user, setUser] = useState<User | null>(initialUser);
+  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 감지용 상태
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // 드롭다운 관련
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const supabase = createClient();
   const router = useRouter();
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
+  // 유저 상태 관리
   useEffect(() => {
     setUser(initialUser);
-  }, [initialUser]);
-
-  useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-      } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+      if (event === "SIGNED_OUT") setUser(null);
+      else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")
         setUser(session?.user ?? null);
-      }
     });
+    return () => subscription.unsubscribe();
+  }, [supabase, initialUser]);
 
-    return () => {
-      subscription.unsubscribe();
+  // 스크롤 감지 로직
+  useEffect(() => {
+    const handleScroll = () => {
+      // 180px 이상 스크롤되면 스티키 헤더 보이기
+      setIsScrolled(window.scrollY > 180);
     };
-  }, [supabase]);
-
-  // useEffect(() => {
-  //   const hasWelcomeCookie = document.cookie.includes("welcome-toast=true");
-
-  //   if (hasWelcomeCookie && user) {
-  //     setTimeout(() => {
-  //       toast.success(`반갑습니다, ${user.user_metadata.full_name}님!`, {
-  //         description: "오늘도 하루 단어를 채워보세요.",
-  //         icon: "👋",
-  //       });
-  //     }, 300);
-  //   }
-  // }, [user]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // 드롭다운 외부 클릭 감지
   useEffect(() => {
@@ -71,25 +61,14 @@ export default function Header({
         setIsDropdownOpen(false);
       }
     };
-
-    // 드롭다운이 열려 있을 때만 이벤트 리스너 추가
-    if (isDropdownOpen) {
+    if (isDropdownOpen)
       document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    // 메뉴 닫힐 때 리스너 제거
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownOpen]);
 
-  // 모바일 메뉴 토글 시 스크롤 방지
+  // 모바일 메뉴 스크롤 방지
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
   }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
@@ -104,130 +83,203 @@ export default function Header({
     router.refresh();
   };
 
+  // 공통 메뉴 리스트
+  const NAV_LINKS = [
+    { name: "오늘의 단어", href: "/" },
+    { name: "전체 단어", href: "/words" },
+    { name: "내 단어장", href: "/wordbook" },
+    // { name: "마이 페이지", href: "/mypage" },
+    { name: "서비스 소개", href: "/about" },
+  ];
+
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-[#121212]">
-        <div className="max-w-[1200px] mx-auto px-6 h-16 flex md:grid md:grid-cols-3 items-center justify-between border-b border-black dark:border-[#A0A0A0]">
-          <div
-            suppressHydrationWarning={true}
-            className="hidden md:block text-left text-sm font-medium tracking-widest text-[#111111] dark:text-[#F1F1F1]"
-          >
-            {todayFormatted}
+      {/* 메인 헤더 */}
+      <header className="relative w-full md:max-w-[1200px] mx-auto bg-white dark:bg-[#121212] text-black dark:text-white border-b border-black dark:border-white z-40">
+        {/* 상단 유틸리티 바 */}
+        <div className="max-w-[1200px] mx-auto px-4 h-14 md:h-10 flex items-center justify-between text-[11px] md:text-xs font-medium tracking-wide md:border-b border-gray-200 dark:border-[#333]">
+          {/* 왼쪽: 날짜 표시, 모바일은 로고 */}
+          <div className="flex items-center gap-4">
+            <span className="hidden md:block text-gray-500 dark:text-gray-400">
+              {todayFormatted}
+            </span>
+            <Link href="/" className="md:hidden flex items-center gap-2">
+              <img src="/icon.png" alt="하루단어 로고" className="w-7 h-7" />
+              <span className="text-lg font-bold">하루단어</span>
+            </Link>
           </div>
-          <h1 className="text-lg font-bold tracking-tight cursor-pointer absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 md:text-center">
+          <div className="flex items-center gap-3">
+            {/* 모바일 햄버거 */}
+            <button
+              className="md:hidden p-1"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+
+            {/* 데스크탑 로그인 버튼 */}
+            <div className="hidden md:block">
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="font-bold hover:underline cursor-pointer"
+                >
+                  로그아웃
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="font-bold hover:underline cursor-pointer"
+                >
+                  로그인
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 중단 로고 */}
+        <div className="hidden md:flex py-2 md:py-4 text-center justify-center w-fit mx-auto">
+          <h1
+            className="text-4xl font-bold
+            tracking-tighter cursor-pointer
+            transition-all duration-500 ease-in-out"
+          >
             <Link href="/">하루단어</Link>
           </h1>
-          <div className="hidden md:flex items-center justify-end gap-6 text-right">
-            <div className="inline-block h-6">
-              <HitCounter initialView={initialView} />
-            </div>
-            {user ? (
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`
-                group relative flex items-center justify-center
-                h-10 px-3 rounded-sm gap-3
-                transition-all duration-200 ease-in-out cursor-pointer`}
-                >
-                  {/* 프로필 사진 */}
-                  {user.user_metadata.avatar_url && (
-                    <img
-                      src={user.user_metadata.avatar_url}
-                      alt="프로필"
-                      className="w-8 h-8 rounded-full border border-gray-300"
-                    />
-                  )}
-                  <span className="text-sm font-medium">
-                    {user.user_metadata.full_name || "사용자"}님
-                  </span>
-                </button>
+        </div>
 
-                {/* 드롭다운 메뉴 */}
-                {isDropdownOpen && (
-                  <div className="absolute right-[-18%] top-[120%] mt-2 w-48 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-md shadow-lg py-1 z-50 animate-fade-in-down">
-                    {/* 단어 검색 */}
-                    <Link
-                      href="/words"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      단어 검색
-                    </Link>
-
-                    {/* 내 단어장 */}
-                    {/* <Link
-                      href=""
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      내 단어장
-                    </Link> */}
-
-                    {/* 구분선 */}
-                    <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
-
-                    {/* 내 정보 */}
-                    <Link
-                      href="/mypage"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2A2A2A] transition-colors"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      내 정보
-                    </Link>
-
-                    {/* 로그아웃 */}
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-[#3A1E1E] transition-colors text-left cursor-pointer"
-                    >
-                      로그아웃
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <LoginButton text="로그인" className="px-3 text-sm font-medium" />
-            )}
-          </div>
-          {/* 모바일 햄버거 버튼 */}
-          <button
-            className="md:hidden p-2 z-50 ml-auto"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+        {/* 하단 메인 네비게이션 */}
+        <div className="hidden md:block max-w-[1200px] mx-auto border-t border-gray-200 dark:border-[#333]">
+          <nav className="flex items-center justify-center px-4 py-3 gap-8 text-sm font-bold tracking-wide">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="hover:text-gray-500 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+          {/* 이중 밑줄 */}
+          <div className="md:max-w-[1200px] mx-auto border-b border-black dark:border-white w-full mb-[0.5px]"></div>
         </div>
       </header>
+
+      {/* 스티키 헤더 */}
+      <div
+        className={`
+          fixed top-0 left-0 w-full z-50 
+          bg-white/95 dark:bg-[#121212]/95 backdrop-blur-sm 
+          border-b border-gray-200 dark:border-[#333] shadow-md
+          transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)
+          ${isScrolled ? "translate-y-0" : "-translate-y-full"}
+        `}
+      >
+        <div className="max-w-[1200px] mx-auto px-6 h-14 flex items-center justify-between">
+          {/* 왼쪽 로고 */}
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/icon.png" alt="하루단어 로고" className="w-7 h-7" />
+            <span className="text-lg font-bold text-black dark:text-white">
+              하루단어
+            </span>
+          </Link>
+
+          {/* 중앙: 네비게이션 (데스크탑) */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-black dark:text-white hover:text-gray-500 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* 오른쪽: 유저 메뉴 & 햄버거 */}
+          <div className="flex items-center gap-4">
+            {/* 데스크탑 유저 정보 */}
+            <div className="hidden md:flex items-center gap-3">
+              {user ? (
+                <>
+                  <Link
+                    href="/mypage"
+                    className="text-xs font-bold border border-black dark:border-white px-3 py-1 rounded-sm hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                  >
+                    마이페이지
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white transition-all"
+                >
+                  로그인
+                </Link>
+              )}
+            </div>
+
+            {/* 모바일 햄버거 버튼 */}
+            <button
+              className="md:hidden p-1"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 모바일 슬라이드 메뉴 */}
+      {/* 배경 오버레이 */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-60 md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/50 z-60 backdrop-blur-sm transition-opacity"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* 슬라이드 메뉴 패널 */}
+      {/* 슬라이드 패널 */}
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] max-w-[300px] bg-white dark:bg-[#1E1E1E] z-70 transform transition-transform duration-300 ease-in-out md:hidden shadow-2xl ${
+        className={`fixed top-0 right-0 h-full w-[80%] max-w-[300px] bg-white dark:bg-[#1E1E1E] z-70 transform transition-transform duration-300 ease-in-out shadow-2xl ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="p-6 flex flex-col h-full">
-          {/* 메뉴 상단: 닫기 버튼 */}
-          <div className="flex justify-end">
-            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2">
+          {/* 닫기 버튼 */}
+          <div className="flex justify-between items-center mb-6">
+            <span className="font-bold text-xl tracking-tight">Menu</span>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:bg-gray-100 dark:hover:bg-[#333] rounded-full transition-colors"
+            >
               <svg
                 className="w-6 h-6 text-gray-500"
                 fill="none"
@@ -244,88 +296,160 @@ export default function Header({
             </button>
           </div>
 
-          {/* 메뉴 컨텐츠 */}
-          <div className="flex-1 flex flex-col gap-6">
-            {/* 사용자 정보 및 메뉴 */}
+          {/* 메뉴 컨텐츠 영역 (flex-1로 꽉 채움) */}
+          <div className="flex-1 flex flex-col h-full">
             {user ? (
-              <div className="flex flex-col gap-4">
-                {/* 프로필 영역 */}
-                <div className="flex items-center gap-3 mb-4">
-                  {user.user_metadata.avatar_url && (
-                    <img
-                      src={user.user_metadata.avatar_url}
-                      alt="mypage"
-                      className="w-10 h-10 rounded-full"
-                    />
-                  )}
-                  <div>
-                    <p className="font-bold text-lg dark:text-white">
-                      {user.user_metadata.full_name}
-                    </p>
-                    <p className="text-xs text-gray-500">{user.email}</p>
+              <>
+                {/* 1. 프로필 영역 (클릭 시 마이페이지 이동) */}
+                <Link
+                  href="/mypage"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="group"
+                >
+                  <div className="flex items-center gap-4 py-3 px-2 -mx-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-xl transition-colors cursor-pointer">
+                    {user.user_metadata.avatar_url ? (
+                      <img
+                        src={user.user_metadata.avatar_url}
+                        alt="profile"
+                        className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 group-hover:border-gray-400 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700" />
+                    )}
+                    <div className="flex-1">
+                      <p className="font-bold text-lg text-gray-900 dark:text-white group-hover:underline underline-offset-4 decoration-2">
+                        {user.user_metadata.full_name}
+                      </p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    </div>
+                    {/* 화살표 아이콘 */}
+                    <svg
+                      className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
+                      ></path>
+                    </svg>
                   </div>
-                </div>
+                </Link>
 
-                {/* 네비게이션 링크 */}
-                <nav className="flex flex-col gap-2">
+                {/* 구분선 */}
+                <div className="border-t border-gray-100 dark:border-[#333] my-6"></div>
+
+                {/* 2. 메인 메뉴 그룹 (탐색) */}
+                <div className="flex flex-col gap-1">
+                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                    탐색
+                  </p>
+                  <Link
+                    href="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
+                  >
+                    <span>📅</span> 오늘의 단어
+                  </Link>
                   <Link
                     href="/words"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
                   >
-                    단어 검색
+                    <span>🔍</span> 전체 단어
                   </Link>
-                  <Link
-                    href="#"
-                    className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
-                  >
-                    내 단어장
-                  </Link>
-                </nav>
+                </div>
 
                 {/* 구분선 */}
-                <div className="border-t border-gray-200 dark:border-[#333] my-1"></div>
-                <nav className="flex flex-col gap-2">
+                <div className="border-t border-gray-100 dark:border-[#333] my-4"></div>
+
+                {/* 3. 개인 메뉴 그룹 (활동) */}
+                <div className="flex flex-col gap-1">
+                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                    내 활동
+                  </p>
                   <Link
-                    href="#"
-                    className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded font-medium dark:text-gray-200"
+                    href="/wordbook"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
                   >
-                    내 정보
+                    <span>📚</span> 내 단어장
                   </Link>
-                  {/* 로그아웃 버튼 */}
+                  <Link
+                    href="/about"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
+                  >
+                    <span>💡</span> 서비스 소개
+                  </Link>
+                </div>
+
+                {/* 4. 로그아웃 (맨 아래로 밀어내기) */}
+                <div className="mt-auto pt-6 border-t border-gray-100 dark:border-[#333]">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-red-500 font-medium py-3 px-2"
+                    className="w-full flex items-center gap-2 py-3 px-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-[#3A1E1E] rounded-lg transition-colors text-sm font-medium"
                   >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      ></path>
+                    </svg>
                     로그아웃
                   </button>
-                </nav>
-              </div>
+                </div>
+              </>
             ) : (
-              // 비로그인 시
-              <div className="mt-4">
-                <p className="text-gray-500 text-sm mb-4 text-center">
-                  로그인하고 단어를 저장해보세요!
-                </p>
-                <div className="flex w-full justify-center">
-                  <LoginButton text="Google 계정으로 로그인" />
+              // 비로그인 상태
+              <div className="flex flex-col h-full">
+                <div className="flex flex-col gap-1">
+                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                    탐색
+                  </p>
+                  <Link
+                    href="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
+                  >
+                    <span>📅</span> 오늘의 단어
+                  </Link>
+                  <Link
+                    href="/words"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="py-3 px-4 text-[16px] font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#2A2A2A] rounded-lg transition-colors flex items-center gap-3"
+                  >
+                    <span>🔍</span> 전체 단어
+                  </Link>
+                </div>
+
+                <div className="mt-auto bg-gray-50 dark:bg-[#2A2A2A] p-6 rounded-xl text-center mb-6">
+                  <p className="text-gray-500 text-sm mb-4">
+                    로그인하고 나만의 단어장을
+                    <br />
+                    만들어보세요.
+                  </p>
+                  <div className="flex justify-center">
+                    <LoginButton text="Google 계정으로 로그인" />
+                  </div>
                 </div>
               </div>
             )}
-          </div>
 
-          {/* 하단 날짜 정보 */}
-          {/* 방문자 수 */}
-          <div className="flex justify-between items-center bg-gray-50 dark:bg-[#2A2A2A] p-4 rounded-lg">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Total Visits
-            </span>
-            <span className="font-bold text-lg dark:text-white">
-              {initialView}
-            </span>
-          </div>
-          <div className="mt-auto pt-6 text-center text-xs text-gray-400">
-            {todayFormatted}
+            {/* 날짜 표시 (맨 아래) */}
+            <div className="text-center text-[10px] text-gray-300 dark:text-gray-600 mt-4">
+              {todayFormatted}
+            </div>
           </div>
         </div>
       </div>
