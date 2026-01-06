@@ -88,7 +88,7 @@ export default function Header({
     { name: "오늘의 단어", href: "/" },
     { name: "전체 단어", href: "/words" },
     { name: "내 단어장", href: "/wordbook" },
-    // { name: "마이 페이지", href: "/mypage" },
+    ...(user ? [{ name: "마이 페이지", href: "/mypage" }] : []),
     { name: "서비스 소개", href: "/about" },
   ];
 
