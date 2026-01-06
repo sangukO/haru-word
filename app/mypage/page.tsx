@@ -13,6 +13,14 @@ export default async function MyPage() {
     redirect("/");
   }
 
+  const { data: userRole } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .single();
+
+  const isAdmin = userRole?.role === "admin";
+
   const { email, user_metadata, confirmed_at } = user;
   const avatarUrl = user_metadata.avatar_url;
   const userName = user_metadata.full_name || user_metadata.name || "사용자";
@@ -57,9 +65,9 @@ export default async function MyPage() {
           )}
         </div>
 
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col gap-2">
           {/* 아바타 이미지 */}
-          <div className="w-16 h-16 mb-4 rounded-full overflow-hidden border border-gray-100 dark:border-[#333]">
+          <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-100 dark:border-[#333]">
             <img
               src={avatarUrl}
               alt="프로필"
@@ -68,9 +76,21 @@ export default async function MyPage() {
           </div>
 
           {/* 이름 */}
-          <h3 className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">
-            {userName}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {userName}
+            </h3>
+            {/* 역할 뱃지 */}
+            {isAdmin ? (
+              <span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs px-2 py-0.5 rounded-full font-bold border border-red-200 dark:border-red-800">
+                ADMIN
+              </span>
+            ) : (
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs px-2 py-0.5 rounded-full font-bold border border-green-200 dark:border-green-800">
+                USER
+              </span>
+            )}
+          </div>
 
           {/* 이메일 */}
           <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -82,14 +102,14 @@ export default async function MyPage() {
       {/* 하단 */}
       <div className="flex flex-col flex-1 pt-4 gap-4">
         {/* 회원 탈퇴 */}
-        <div className="mb-3">
+        <div>
           <h4 className="text-xs font-bold text-gray-400 mb-2 px-1">
             계정 관리
           </h4>
           <WithdrawButton />
         </div>
         {/* 문의 */}
-        <div className="mb-3">
+        <div>
           <h4 className="text-xs font-bold text-gray-400 mb-2 px-1">
             고객 지원
           </h4>
