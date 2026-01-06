@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { checkIsAdmin } from "@/utils/supabase/isAdmin";
 
 interface HeaderProps {
   user: User | null;
@@ -18,6 +19,8 @@ export default function Header({
   todayFormatted,
 }: HeaderProps) {
   const [user, setUser] = useState<User | null>(initialUser);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const [isScrolled, setIsScrolled] = useState(false); // 스크롤 감지용 상태
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,6 +43,10 @@ export default function Header({
     });
     return () => subscription.unsubscribe();
   }, [supabase, initialUser]);
+
+  useEffect(() => {
+    checkIsAdmin().then(setIsAdmin);
+  }, []);
 
   // 스크롤 감지 로직
   useEffect(() => {
@@ -89,6 +96,7 @@ export default function Header({
     { name: "전체 단어", href: "/words" },
     { name: "내 단어장", href: "/wordbook" },
     ...(user ? [{ name: "마이 페이지", href: "/mypage" }] : []),
+    ...(user && isAdmin ? [{ name: "관리 페이지", href: "/admin" }] : []),
     { name: "서비스 소개", href: "/about" },
   ];
 
@@ -211,7 +219,7 @@ export default function Header({
             ))}
           </nav>
 
-          {/* 오른쪽: 유저 메뉴 & 햄버거 */}
+          {/* 오른쪽: 유저 메뉴, 햄버거 */}
           <div className="flex items-center gap-4">
             {/* 데스크탑 유저 정보 */}
             <div className="hidden md:flex items-center gap-3">
@@ -296,11 +304,11 @@ export default function Header({
             </button>
           </div>
 
-          {/* 메뉴 컨텐츠 영역 (flex-1로 꽉 채움) */}
+          {/* 메뉴 컨텐츠 영역 */}
           <div className="flex-1 flex flex-col h-full">
             {user ? (
               <>
-                {/* 1. 프로필 영역 (클릭 시 마이페이지 이동) */}
+                {/* 프로필 영역 */}
                 <Link
                   href="/mypage"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -342,7 +350,7 @@ export default function Header({
                 {/* 구분선 */}
                 <div className="border-t border-gray-100 dark:border-[#333] my-6"></div>
 
-                {/* 2. 메인 메뉴 그룹 (탐색) */}
+                {/* 메인 메뉴 그룹 */}
                 <div className="flex flex-col gap-1">
                   <p className="px-2 text-xs font-bold text-gray-400 mb-2">
                     탐색
@@ -366,7 +374,7 @@ export default function Header({
                 {/* 구분선 */}
                 <div className="border-t border-gray-100 dark:border-[#333] my-4"></div>
 
-                {/* 3. 개인 메뉴 그룹 (활동) */}
+                {/* 개인 메뉴 그룹 */}
                 <div className="flex flex-col gap-1">
                   <p className="px-2 text-xs font-bold text-gray-400 mb-2">
                     내 활동
@@ -387,7 +395,7 @@ export default function Header({
                   </Link>
                 </div>
 
-                {/* 4. 로그아웃 (맨 아래로 밀어내기) */}
+                {/* 로그아웃 */}
                 <div className="mt-auto pt-6 border-t border-gray-100 dark:border-[#333]">
                   <button
                     onClick={handleLogout}
@@ -446,7 +454,7 @@ export default function Header({
               </div>
             )}
 
-            {/* 날짜 표시 (맨 아래) */}
+            {/* 날짜 표시 */}
             <div className="text-center text-[10px] text-gray-300 dark:text-gray-600 mt-4">
               {todayFormatted}
             </div>
