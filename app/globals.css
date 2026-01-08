@@ -149,3 +149,57 @@
 .group:hover .variable-font-char {
   animation-play-state: running;
 }
+
+/* 단어 카드 선택 애니메이션 */
+@keyframes shake-soft {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-shake-soft-effect {
+  animation: shake-soft 0.3s infinite linear;
+}
+
+/* 플로팅 바 애니메이션 */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%) translateX(0%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(0) translateX(0%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(150%) translateX(0%);
+    opacity: 0;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-in-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.4s ease-in-out forwards;
+}
