@@ -55,6 +55,15 @@ CREATE TABLE IF NOT EXISTS public.bookmarks (
   CONSTRAINT bookmarks_word_id_fkey FOREIGN KEY (word_id) REFERENCES public.words(id)
 );
 
+-- 1-6. Ai Logs (AI 서비스 로그)
+CREATE TABLE IF NOT EXISTS public.ai_usage_logs (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  user_id uuid NOT NULL,
+  feature_name text DEFAULT 'sentence-generation',
+  created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT ai_usage_logs_pkey PRIMARY KEY (id),
+  CONSTRAINT ai_usage_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
 
 -- ==========================================
 -- 2. RLS(Row Level Security) 활성화
@@ -64,7 +73,7 @@ ALTER TABLE public.site_stats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.words ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
-
+ALTER TABLE public.ai_usage_logs ENABLE ROW LEVEL SECURITY;
 
 -- ==========================================
 -- 3. 보안 정책 (RLS Policies)
@@ -100,3 +109,6 @@ CREATE POLICY "자기 자신의 역할은 읽을 수 있음" ON public.user_role
 CREATE POLICY "내 북마크만 보기" ON public.bookmarks FOR SELECT TO authenticated USING (auth.uid() = user_id);
 CREATE POLICY "내 북마크 추가" ON public.bookmarks FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "내 북마크 삭제" ON public.bookmarks FOR DELETE TO authenticated USING (auth.uid() = user_id);
+
+-- [Ai Logs]
+CREATE POLICY "내 AI 로그 추가" ON public.ai_usage_logs FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
