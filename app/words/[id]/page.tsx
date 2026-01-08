@@ -91,6 +91,19 @@ export default async function WordDetailPage({ params }: Props) {
     );
   }
 
+  let isBookmarked = false;
+
+  if (user) {
+    const { data: bookmark } = await supabase
+      .from("bookmarks")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("word_id", word.id)
+      .maybeSingle();
+
+    isBookmarked = !!bookmark;
+  }
+
   // 이전, 다음 단어 가져오기 / 병렬 처리 최적화
   const [prevResult, nextResult] = await Promise.all([
     getPrevWord(supabase, word.date),
@@ -100,7 +113,7 @@ export default async function WordDetailPage({ params }: Props) {
   return (
     <main className="flex flex-1 flex-col items-center px-6">
       <WordDetailView
-        word={word as any} // Supabase 타입 이슈 회피용 assertion
+        word={{ ...word, isBookmarked }}
         prevWord={prevResult.data}
         nextWord={nextResult.data}
         user={user}

@@ -10,6 +10,11 @@ interface Props {
   isBookmarked?: boolean;
   // 단어 리스트에서 해당 카드 제거
   onRemove?: (wordId: number) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  isSelected?: boolean;
+  onClick?: () => void;
+  isSelectionMode?: boolean;
 }
 
 export default function WordCard({
@@ -17,6 +22,11 @@ export default function WordCard({
   userId,
   isBookmarked = false,
   onRemove,
+  className,
+  style,
+  isSelected,
+  onClick,
+  isSelectionMode,
 }: Props) {
   // 버튼 상태가 바뀔 때 실행될 함수
   const handleBookmarkChange = (newIsBookmarked: boolean) => {
@@ -27,16 +37,29 @@ export default function WordCard({
   };
 
   return (
-    <div className="relative group flex flex-col bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#333] rounded-xl hover:shadow-lg transition-shadow duration-300">
+    <div
+      onClick={onClick}
+      style={style}
+      className={[
+        "relative group flex flex-col rounded-xl border transition-all duration-300",
+
+        isSelected
+          ? "bg-purple-50 dark:bg-[#181818] border-purple-500 dark:border-purple-400 shadow-[0_0_40px_rgba(168,85,247,0.3)] scale-[1.02] z-10"
+          : "bg-white dark:bg-[#1E1E1E] border-gray-200 dark:border-[#333] hover:shadow-lg",
+
+        className,
+      ].join(" ")}
+    >
       {/* 찜 버튼 */}
       {/* userId가 있을 때만 렌더링 */}
       {userId && (
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10 cursor-pointer">
           <BookmarkButton
             wordId={word.id}
             userId={userId}
             initialIsBookmarked={isBookmarked}
             onChange={handleBookmarkChange}
+            disabled={isSelectionMode}
           />
         </div>
       )}
@@ -45,6 +68,11 @@ export default function WordCard({
       <Link
         href={`/words/${word.id}`}
         className="flex flex-col flex-1 p-6 h-full"
+        onClick={(e) => {
+          if (isSelectionMode) {
+            e.preventDefault();
+          }
+        }}
       >
         {/* 상단 카테고리 뱃지*/}
         <div className="flex justify-between items-start mb-3">

@@ -5,10 +5,11 @@ import PageLoginSection from "@/components/PageLoginSection";
 import { DEFAULT_THEME_COLOR } from "@/constants/theme";
 import { getTodayDate } from "@/utils/date";
 import { Word } from "@/types";
+import BookmarkButton from "./BookmarkButton";
 
 // 필요한 데이터 타입 정의
 interface WordDetailViewProps {
-  word: Word;
+  word: Word & { isBookmarked?: boolean };
   prevWord?: { id: number; date: string } | null;
   nextWord?: { id: number; date: string } | null;
   user: any;
@@ -109,6 +110,15 @@ export default function WordDetailView({
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight break-keep">
             {word.word}
           </h1>
+
+          {/* 북마크 버튼 */}
+          <div className="absolute -right-[50%] -top-1/3 flex items-center">
+            <BookmarkButton
+              wordId={word.id}
+              userId={user?.id || ""}
+              initialIsBookmarked={word.isBookmarked}
+            />
+          </div>
         </div>
       </div>
 

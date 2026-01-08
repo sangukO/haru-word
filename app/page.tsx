@@ -86,6 +86,19 @@ export default async function Home() {
     );
   }
 
+  let isBookmarked = false;
+
+  if (user) {
+    const { data: bookmark } = await supabase
+      .from("bookmarks")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("word_id", word.id)
+      .maybeSingle();
+
+    isBookmarked = !!bookmark;
+  }
+
   //이전 글
   const { data: prevWord } = await getPrevWord(supabase, word.date);
 
@@ -93,7 +106,7 @@ export default async function Home() {
     <main className="flex flex-1 flex-col items-center px-6">
       <MidnightUpdater />
       <WordDetailView
-        word={word as any}
+        word={{ ...word, isBookmarked }}
         prevWord={prevWord}
         nextWord={null} // 오늘은 다음 글이 없으므로 null
         user={user}

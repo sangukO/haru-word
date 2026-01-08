@@ -37,7 +37,7 @@ export default function ConfirmToast({
       <div className="flex gap-2 justify-end">
         <button
           onClick={() => toast.dismiss(t)}
-          className="px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+          className="px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
         >
           {cancelLabel}
         </button>
@@ -47,7 +47,7 @@ export default function ConfirmToast({
             toast.dismiss(t); // 확인 누르면 토스트 닫고
             onConfirm(); // 로직 실행
           }}
-          className={`px-3 py-2 text-sm font-bold text-white rounded-lg transition-colors shadow-sm ${
+          className={`px-3 py-2 text-sm font-bold text-white rounded-lg transition-colors shadow-sm cursor-pointer ${
             isDestructive
               ? "bg-red-500 hover:bg-red-600"
               : "bg-black dark:bg-white dark:text-black hover:opacity-80"

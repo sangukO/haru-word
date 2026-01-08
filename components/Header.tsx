@@ -8,6 +8,7 @@ import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { checkIsAdmin } from "@/utils/supabase/isAdmin";
+import { usePathname } from "next/navigation";
 
 interface HeaderProps {
   user: User | null;
@@ -100,6 +101,8 @@ export default function Header({
     { name: "서비스 소개", href: "/about" },
   ];
 
+  const pathname = usePathname();
+
   return (
     <>
       {/* 메인 헤더 */}
@@ -172,15 +175,25 @@ export default function Header({
         {/* 하단 메인 네비게이션 */}
         <div className="hidden md:block max-w-[1200px] mx-auto border-t border-gray-200 dark:border-[#333]">
           <nav className="flex items-center justify-center px-4 py-3 gap-8 text-sm font-bold tracking-wide">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="hover:text-gray-500 transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`transition-colors ${
+                    isActive
+                      ? "text-black dark:text-white"
+                      : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </nav>
           {/* 이중 밑줄 */}
           <div className="md:max-w-[1200px] mx-auto border-b border-black dark:border-white w-full mb-[0.5px]"></div>
@@ -208,15 +221,25 @@ export default function Header({
 
           {/* 중앙: 네비게이션 (데스크탑) */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-black dark:text-white hover:text-gray-500 transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`transition-colors ${
+                    isActive
+                      ? "text-black dark:text-white"
+                      : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* 오른쪽: 유저 메뉴, 햄버거 */}
@@ -225,12 +248,12 @@ export default function Header({
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <>
-                  <Link
-                    href="/mypage"
-                    className="text-xs font-bold border border-black dark:border-white px-3 py-1 rounded-sm hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                  <button
+                    onClick={handleLogout}
+                    className="font-bold hover:underline cursor-pointer text-sm text-white"
                   >
-                    마이페이지
-                  </Link>
+                    로그아웃
+                  </button>
                 </>
               ) : (
                 <Link

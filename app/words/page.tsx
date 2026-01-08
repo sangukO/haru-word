@@ -68,6 +68,8 @@ export default async function WordsPage({ searchParams }: PageProps) {
     ? bookmarksResult.data.map((b) => b.word_id)
     : [];
 
+  let isBookmarked = false;
+
   return (
     <Suspense>
       <WordsList
