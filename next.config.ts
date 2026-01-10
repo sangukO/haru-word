@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     serverActions: {
-      allowedOrigins: ["192.168.219.111:3000", "localhost:3000"],
+      allowedOrigins: [
+        "192.168.219.188:3000",
+        "192.168.219.111:3000",
+        "localhost:3000",
+      ],
     },
   },
 };
