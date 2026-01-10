@@ -22,7 +22,7 @@ export default function ConfirmToast({
   isDestructive = true,
 }: ConfirmToastProps) {
   return (
-    <div className="w-full flex flex-col gap-4 p-4 md:min-w-[350px] bg-white dark:bg-[#1E1E1E] rounded-xl shadow-lg border border-gray-100 dark:border-[#333]">
+    <div className="w-full flex flex-col gap-4 p-4 md:min-w-87.5 bg-white dark:bg-[#1E1E1E] rounded-xl shadow-lg border border-gray-100 dark:border-[#333]">
       {/* 제목 & 설명 */}
       <div>
         <h3 className="font-bold text-base mb-1 text-gray-900 dark:text-white">

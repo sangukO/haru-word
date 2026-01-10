@@ -103,7 +103,7 @@ export default async function MyPage() {
 
           <div className="flex flex-1 flex-col gap-2 justify-center items-center">
             <div className="flex flex-col items-center">
-              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1">
                 AI 서비스 일일 사용량 초기화
               </p>
               <ResetTimer className="text-3xl font-black bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400" />

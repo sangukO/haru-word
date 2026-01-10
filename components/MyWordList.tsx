@@ -218,12 +218,12 @@ export default function MyWordList({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-[120px] md:pb-[60px]">
+    <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-30 md:pb-15">
       {/* 헤더 및 검색창 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">내 단어장 📒</h1>
         <div className="flex items-center gap-2">
-          <div className="flex items-center w-full md:w-72 px-4 py-2.5 border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-black transition-all">
+          <div className="flex items-center w-full md:w-72 px-4 py-2.5 border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-black transition-color">
             <svg
               className="h-5 w-5 text-gray-400 mr-3"
               fill="none"
@@ -266,7 +266,7 @@ export default function MyWordList({
           <div>
             <button
               className={`
-                px-3 py-2.5 h-[42px] flex items-center rounded-xl font-bold transition-all duration-500 relative overflow-hidden group outline-none border cursor-pointer
+                px-3 py-2.5 h-10.5 flex items-center rounded-xl font-bold transition-all duration-200 relative overflow-hidden group outline-none border cursor-pointer
                 ${
                   isAiMode
                     ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.6)] border-transparent"
@@ -279,7 +279,7 @@ export default function MyWordList({
             >
               {/* 그라데이션 배경 레이어 */}
               <div
-                className={`absolute inset-0 bg-linear-to-r from-violet-600 via-purple-600 to-indigo-600 transition-opacity duration-500 ${
+                className={`absolute inset-0 bg-linear-to-r from-violet-600 via-purple-600 to-indigo-600 transition-opacity duration-200 ${
                   isAiMode ? "opacity-100" : "opacity-0"
                 }`}
               />
@@ -388,7 +388,7 @@ export default function MyWordList({
           {isAiMode && (
             <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl">
               <div
-                className={`bg-white/80 dark:bg-[#1E1E1E]/90 backdrop-blur-md border border-purple-200 dark:border-purple-900 shadow-2xl rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300
+                className={`bg-white/80 dark:bg-[#1E1E1E]/90 backdrop-blur-md border border-purple-200 dark:border-purple-900 shadow-2xl rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-200
                     ${isClosing ? "animate-slide-down" : "animate-slide-up"}
                     `}
               >
@@ -466,7 +466,7 @@ export default function MyWordList({
                   }
                   onClick={handleGenerateAI}
                   className={`
-                    w-full md:w-[166px] px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all
+                    w-full md:w-41.5 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all
                     ${
                       // 오늘 횟수 마감
                       dailyUsageCount >= AI_DAILY_LIMIT

@@ -29,7 +29,7 @@ export default function WordDetailView({
   const isToday = word.date === today;
 
   return (
-    <article className="max-w-[1200px] w-full text-center">
+    <article className="max-w-300 w-full text-center">
       <ColorSetter color={accentColor} />
       {/* 네비게이션 */}
       <nav className="grid grid-cols-3 items-center pt-4 pb-4 text-sm w-full">
@@ -95,7 +95,7 @@ export default function WordDetailView({
       <div className="mb-6">
         {word.hanja && (
           <span
-            className="font-extrabold transition-all duration-300
+            className="font-extrabold transition-color duration-200
             font-serif text-6xl md:text-9xl
             text-[#111111] dark:text-[#F1F1F1]
             block mb-4"
@@ -148,7 +148,7 @@ export default function WordDetailView({
                   순화어:
                 </span>
                 <span
-                  className="transition-all duration-300
+                  className="transition-all duration-200
                   brightness-[0.7] saturate-[1.2]
                   dark:brightness-[1.8] dark:saturate-[1.5]"
                   style={{ color: accentColor }}

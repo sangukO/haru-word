@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "sonner";
 import AuthCleanup from "@/components/AuthCleanup";
+import ThemeProvider from "@/components/ui/ThemeProvider";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -117,25 +118,27 @@ export default async function RootLayout({
   // }
 
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
+        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out`}
       >
-        <AuthCleanup />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <Header user={user} todayFormatted={todayFormatted} />
-        <main className="flex-1 flex flex-col w-full">{children}</main>
-        <Footer />
-        <GoogleAnalytics gaId="G-782YRDQX7Q" />
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            className: "my-toast",
-          }}
-        />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthCleanup />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          <Header user={user} todayFormatted={todayFormatted} />
+          <main className="flex-1 flex flex-col w-full">{children}</main>
+          <Footer />
+          <GoogleAnalytics gaId="G-782YRDQX7Q" />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              className: "my-toast",
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
