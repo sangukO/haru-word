@@ -41,7 +41,7 @@ export default function Select<T extends string | number>({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md border transition-all cursor-pointer
+          flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md border transition-color cursor-pointer
           ${
             isOpen
               ? "bg-gray-100 border-gray-300 text-gray-900 dark:bg-[#2d333b] dark:border-gray-500 dark:text-white"
