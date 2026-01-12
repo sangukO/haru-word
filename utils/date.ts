@@ -11,6 +11,19 @@ export const getFormattedDate = () => {
   return date.replaceAll("-", ".");
 };
 
+export const getFormattedKoreanMonthDay = (dateStr: string) => {
+  if (!dateStr) return "";
+  const [_, m, d] = dateStr.split("-");
+  return `${Number(m)}월 ${Number(d)}일`;
+};
+
+// 'YYYY년 MM월 DD일' 형식으로 변환
+export const getFormattedKoreanDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  const [y, m, d] = dateStr.split("-");
+  return `${y}년 ${m}월 ${d}일`;
+};
+
 // 날짜 더하거나 빼기
 export const offsetDate = (dateStr: string, days: number) => {
   const date = new Date(dateStr);
@@ -21,4 +34,10 @@ export const offsetDate = (dateStr: string, days: number) => {
   const d = String(date.getDate()).padStart(2, "0");
 
   return `${y}-${m}-${d}`;
+};
+
+// UTC ISO 문자열을 로컬 날짜 문자열로 변환
+export const getLocalDateFromISO = (isoString: string) => {
+  if (!isoString) return "";
+  return new Date(isoString).toLocaleDateString("en-CA");
 };
