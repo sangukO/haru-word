@@ -5,6 +5,11 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ConfirmToast from "@/components/ui/ConfirmToast";
+import SearchBar from "@/components/ui/SearchBar";
+import { Plus } from "lucide-react";
+import Modal from "@/components/ui/Modal";
+import Select from "@/components/ui/Select";
+import DatePicker from "@/components/ui/DatePicker";
 
 interface Category {
   id: string;
@@ -30,7 +35,7 @@ interface Props {
   categories: Category[];
 }
 
-export default function AdminDashboard({ initialWords, categories }: Props) {
+export default function WordTab({ initialWords, categories }: Props) {
   const supabase = createClient();
   const router = useRouter();
 
@@ -40,20 +45,6 @@ export default function AdminDashboard({ initialWords, categories }: Props) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWord, setEditingWord] = useState<Word | null>(null);
-
-  // 모달 열렸을 때 뒷배경 스크롤 방지
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    // 컴포넌트가 언마운트되거나 모달이 닫힐 때 스크롤 잠금 해제
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isModalOpen]);
 
   // 서버 데이터가 바뀌면 단어 목록 갱신
   useEffect(() => {
@@ -191,47 +182,16 @@ export default function AdminDashboard({ initialWords, categories }: Props) {
     <div>
       {/* 상단 컨트롤러 (공통) */}
       <div className="flex gap-4 w-full mb-6">
-        <div className="flex items-center w-full px-4 py-2.5 border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-black transition-all">
-          <svg
-            className="h-5 w-5 text-gray-400 mr-3"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          <input
-            type="text"
-            placeholder="검색할 단어를 입력하세요."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-transparent border-none outline-none text-sm placeholder-gray-400 text-gray-900 dark:text-white"
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          )}
-        </div>
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          className="w-full"
+        />
         <button
           onClick={() => openModal()}
-          className="bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 px-2 py-2 rounded-lg font-bold transition-colors whitespace-nowrap cursor-pointer"
+          className="flex justify-between items-center bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 px-3 py-2 rounded-lg font-bold whitespace-nowrap cursor-pointer"
         >
-          + 단어 추가
+          <Plus className="w-5 h-5" /> 단어 추가
         </button>
       </div>
 
@@ -423,145 +383,138 @@ export default function AdminDashboard({ initialWords, categories }: Props) {
       </div>
 
       {/* 단어 추가 모달 */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-[#1E1E1E] w-full max-w-lg rounded-xl shadow-2xl p-6 overflow-y-auto max-h-[90vh]">
-            <h2 className="text-xl font-bold mb-4">
-              {editingWord ? "단어 수정" : "새 단어 추가"}
-            </h2>
-
-            <form onSubmit={handleSave} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">날짜</label>
-                <input
-                  type="date"
-                  required
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.date}
-                  onChange={(e) =>
-                    setFormData({ ...formData, date: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">단어</label>
-                <input
-                  required
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.word}
-                  onChange={(e) =>
-                    setFormData({ ...formData, word: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    한자 (선택)
-                  </label>
-                  <input
-                    className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                    value={formData.hanja}
-                    onChange={(e) =>
-                      setFormData({ ...formData, hanja: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    순화어 (선택)
-                  </label>
-                  <input
-                    className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                    value={formData.refined_word}
-                    onChange={(e) =>
-                      setFormData({ ...formData, refined_word: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">뜻</label>
-                <input
-                  required
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.meaning}
-                  onChange={(e) =>
-                    setFormData({ ...formData, meaning: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  카테고리
-                </label>
-                <select
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                >
-                  <option value="">선택 안 함</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">예문</label>
-                <textarea
-                  required
-                  rows={3}
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.example}
-                  onChange={(e) =>
-                    setFormData({ ...formData, example: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  상세 설명 (선택)
-                </label>
-                <textarea
-                  rows={2}
-                  className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-                  value={formData.detail}
-                  onChange={(e) =>
-                    setFormData({ ...formData, detail: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-gray-400 hover:text-gray-600 cursor-pointer"
-                >
-                  취소
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded hover:opacity-80 disabled:opacity-50 cursor-pointer"
-                >
-                  {loading ? "저장 중..." : "저장하기"}
-                </button>
-              </div>
-            </form>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={editingWord ? "단어 수정" : "새 단어 추가"}
+        hideCloseButton={true}
+      >
+        <form onSubmit={handleSave} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">날짜</label>
+            <DatePicker
+              date={formData.date}
+              onChange={(newDate) =>
+                setFormData({ ...formData, date: newDate })
+              }
+            />
           </div>
-        </div>
-      )}
+
+          <div>
+            <label className="block text-sm font-medium mb-1">단어</label>
+            <input
+              required
+              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+              value={formData.word}
+              onChange={(e) =>
+                setFormData({ ...formData, word: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                한자 (선택)
+              </label>
+              <input
+                className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+                value={formData.hanja}
+                onChange={(e) =>
+                  setFormData({ ...formData, hanja: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                순화어 (선택)
+              </label>
+              <input
+                className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+                value={formData.refined_word}
+                onChange={(e) =>
+                  setFormData({ ...formData, refined_word: e.target.value })
+                }
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">뜻</label>
+            <input
+              required
+              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+              value={formData.meaning}
+              onChange={(e) =>
+                setFormData({ ...formData, meaning: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">카테고리</label>
+            <div className="relative">
+              <Select
+                value={formData.category}
+                options={["", ...categories.map((c) => c.id)]}
+                onChange={(value) =>
+                  setFormData({ ...formData, category: value as string })
+                }
+                formatLabel={(id) => {
+                  if (id === "") return "선택 안 함";
+                  const found = categories.find((c) => c.id === id);
+                  return found ? found.name : String(id);
+                }}
+                className="w-full h-10.5"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">예문</label>
+            <textarea
+              required
+              rows={3}
+              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+              value={formData.example}
+              onChange={(e) =>
+                setFormData({ ...formData, example: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              상세 설명 (선택)
+            </label>
+            <textarea
+              rows={2}
+              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
+              value={formData.detail}
+              onChange={(e) =>
+                setFormData({ ...formData, detail: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="px-4 py-2 text-gray-400 hover:text-gray-600 cursor-pointer"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded hover:opacity-80 disabled:opacity-50 cursor-pointer"
+            >
+              {loading ? "저장 중..." : "저장하기"}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

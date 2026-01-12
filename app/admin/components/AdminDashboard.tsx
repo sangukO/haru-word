@@ -23,7 +23,7 @@ export default function AdminDashboard({
       <div className="flex gap-2 mb-8 border-b dark:border-[#333]">
         <button
           onClick={() => setActiveTab("word")}
-          className={`px-6 py-3 font-bold text-sm transition-all border-b-2 ${
+          className={`px-6 py-3 font-bold text-sm border-b-2 ${
             activeTab === "word"
               ? "border-black dark:border-white text-black dark:text-white"
               : "border-transparent text-gray-400 hover:text-gray-600 cursor-pointer"
@@ -33,7 +33,7 @@ export default function AdminDashboard({
         </button>
         <button
           onClick={() => setActiveTab("ai")}
-          className={`px-6 py-3 font-bold text-sm transition-all border-b-2 ${
+          className={`px-6 py-3 font-bold text-sm border-b-2 ${
             activeTab === "ai"
               ? "border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400"
               : "border-transparent text-gray-400 hover:text-gray-600 cursor-pointer"

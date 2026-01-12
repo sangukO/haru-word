@@ -41,10 +41,10 @@ export default function WordCard({
       onClick={onClick}
       style={style}
       className={[
-        "relative group flex flex-col rounded-xl border transition-all duration-200",
+        "relative group flex flex-col rounded-xl border transition hover:z-20",
 
         isSelected
-          ? "bg-purple-50 dark:bg-[#181818] border-purple-500 dark:border-purple-400 shadow-[0_0_40px_rgba(168,85,247,0.3)] scale-[1.02] z-10"
+          ? "bg-[#fefcff] dark:bg-[#181818] border-purple-500 dark:border-purple-400 shadow-[0_0_40px_rgba(168,85,247,0.3)] scale-[1.02] z-10"
           : "bg-white dark:bg-[#1E1E1E] border-gray-200 dark:border-[#333] hover:shadow-lg",
 
         className,

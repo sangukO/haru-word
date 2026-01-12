@@ -7,9 +7,7 @@ type WordInfo = {
   id: number;
   word: string;
   meaning: string;
-  categories?: {
-    color: string;
-  } | null;
+  categories?: { color: string }[] | { color: string } | null;
 };
 
 type HistoryItemProps = {
@@ -70,7 +68,7 @@ export default function AiHistoryItem({ log, usedWords }: HistoryItemProps) {
             <Link
               key={word.id}
               href={`/words/${word.id}`}
-              className="px-2 py-1 rounded-md text-xs font-bold border transition-all hover:opacity-80"
+              className="px-2 py-1 rounded-md text-xs font-bold border transition-opacity hover:opacity-80"
               style={{
                 color: color,
                 backgroundColor: `${color}15`,

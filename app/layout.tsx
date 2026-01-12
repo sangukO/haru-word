@@ -9,6 +9,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "sonner";
 import AuthCleanup from "@/components/AuthCleanup";
 import ThemeProvider from "@/components/ui/ThemeProvider";
+import AttendanceChecker from "@/components/AttendanceChecker";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -124,6 +125,7 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthCleanup />
+          <AttendanceChecker user={user} />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

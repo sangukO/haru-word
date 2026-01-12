@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { checkIsAdmin } from "@/utils/supabase/isAdmin";
 import { usePathname } from "next/navigation";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
+import { ChevronRight, LogOut, Menu, X } from "lucide-react";
 
 interface HeaderProps {
   user: User | null;
@@ -107,7 +108,7 @@ export default function Header({
   return (
     <>
       {/* 메인 헤더 */}
-      <header className="relative w-full md:max-w-300 mx-auto bg-white dark:bg-[#121212] text-black dark:text-white border-b border-black dark:border-white z-40 transition-colors duration-200 ease-in-out">
+      <header className="relative w-full md:max-w-300 mx-auto text-black dark:text-white border-b border-black dark:border-white z-40">
         {/* 상단 유틸리티 바 */}
         <div className="max-w-300 mx-auto px-4 h-14 md:h-10 flex items-center justify-between text-[11px] md:text-xs font-medium tracking-wide md:border-b border-gray-200 dark:border-[#333]">
           {/* 왼쪽: 날짜 표시, 모바일은 로고 */}
@@ -126,19 +127,7 @@ export default function Header({
               className="md:hidden p-1"
               onClick={() => setIsMobileMenuOpen(true)}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+              <Menu className="w-5 h-5" />
             </button>
 
             {/* 데스크탑 로그인 버튼 */}
@@ -188,7 +177,7 @@ export default function Header({
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`transition-colors ${
+                  className={`${
                     isActive
                       ? "text-black dark:text-white"
                       : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
@@ -262,7 +251,7 @@ export default function Header({
               ) : (
                 <Link
                   href="/login"
-                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white transition-all"
+                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white"
                 >
                   로그인
                 </Link>
@@ -277,19 +266,7 @@ export default function Header({
               className="md:hidden p-1"
               onClick={() => setIsMobileMenuOpen(true)}
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+              <Menu className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -318,19 +295,7 @@ export default function Header({
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:bg-gray-100 dark:hover:bg-[#333] rounded-full transition-colors"
             >
-              <svg
-                className="w-6 h-6 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-6 h-6 text-gray-500" />
             </button>
           </div>
 
@@ -361,19 +326,7 @@ export default function Header({
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                     {/* 화살표 아이콘 */}
-                    <svg
-                      className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 5l7 7-7 7"
-                      ></path>
-                    </svg>
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200" />
                   </div>
                 </Link>
 
@@ -449,19 +402,7 @@ export default function Header({
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 py-3 px-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-[#3A1E1E] rounded-lg transition-colors text-sm font-medium"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      ></path>
-                    </svg>
+                    <LogOut className="w-5 h-5" />
                     로그아웃
                   </button>
                 </div>
