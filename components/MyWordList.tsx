@@ -11,6 +11,7 @@ import { AI_DAILY_LIMIT, AI_LIMIT_MESSAGE } from "@/constants/service";
 import ResetTimer from "@/components/ResetTimer";
 import SearchBar from "@/components/ui/SearchBar";
 import Modal from "@/components/ui/Modal";
+import { Loader2, TimerReset } from "lucide-react";
 
 interface Props {
   initialCategories: Category[];
@@ -435,7 +436,7 @@ export default function MyWordList({
                   }
                   onClick={handleGenerateAI}
                   className={`
-                    w-full md:w-41.5 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition
+                    w-full md:w-41.5 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-transform
                     ${
                       // 오늘 횟수 마감
                       dailyUsageCount >= AI_DAILY_LIMIT
@@ -450,46 +451,12 @@ export default function MyWordList({
                 >
                   {isGenerating ? (
                     <div className="flex items-center w-full gap-4">
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
+                      <Loader2 className="animate-spin h-5 w-5 text-white" />
                       생성 중...
                     </div>
                   ) : dailyUsageCount >= 3 ? (
                     <span className="flex items-center justify-center gap-2 text-md text-red-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-timer-reset-icon lucide-timer-reset"
-                      >
-                        <path d="M10 2h4" />
-                        <path d="M12 14v-4" />
-                        <path d="M4 13a8 8 0 0 1 8-7 8 8 0 1 1-5.3 14L4 17.6" />
-                        <path d="M9 17H4v5" />
-                      </svg>
+                      <TimerReset size={18} />
                       <ResetTimer />
                     </span>
                   ) : selectedWords.length === 0 ? (
