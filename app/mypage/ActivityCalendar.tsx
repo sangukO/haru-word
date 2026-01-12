@@ -3,7 +3,6 @@
 import { ActivityCalendar as AC } from "react-activity-calendar";
 import type { ThemeInput, Activity } from "react-activity-calendar";
 import { Tooltip } from "react-tooltip";
-import { useTheme } from "next-themes";
 import React, { useEffect, useState, useMemo } from "react";
 import { SERVICE_START_DATE } from "@/constants/service";
 import Select from "@/components/ui/Select";
@@ -19,7 +18,6 @@ interface ActivityCalendarProps {
 }
 
 export default function ActivityCalendar({ data }: ActivityCalendarProps) {
-  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
 
@@ -62,9 +60,21 @@ export default function ActivityCalendar({ data }: ActivityCalendarProps) {
     return data.reduce((acc, curr) => acc + curr.count, 0);
   }, [data]);
 
-  const purpleTheme: ThemeInput = {
-    light: ["#EFF2F5", "#d8b4fe", "#c084fc", "#a855f7", "#7e22ce"],
-    dark: ["#252525", "#4a0f77", "#581c87", "#7e22ce", "#d8b4fe"],
+  const cssTheme: ThemeInput = {
+    light: [
+      "var(--grass-l0)",
+      "var(--grass-l1)",
+      "var(--grass-l2)",
+      "var(--grass-l3)",
+      "var(--grass-l4)",
+    ],
+    dark: [
+      "var(--grass-l0)",
+      "var(--grass-l1)",
+      "var(--grass-l2)",
+      "var(--grass-l3)",
+      "var(--grass-l4)",
+    ],
   };
 
   if (!mounted) return null;
@@ -107,8 +117,8 @@ export default function ActivityCalendar({ data }: ActivityCalendarProps) {
       <div className="w-full flex flex-col items-center p-6 border border-gray-200 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E]">
         <AC
           data={data}
-          theme={purpleTheme}
-          colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
+          theme={cssTheme}
+          colorScheme="light"
           blockSize={12}
           blockMargin={4}
           fontSize={12}

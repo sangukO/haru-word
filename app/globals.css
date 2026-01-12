@@ -16,6 +16,12 @@
     --toast-border: rgba(255, 255, 255, 0.6);
     --toast-text: #111111;
     --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+    --grass-l0: #eff2f5;
+    --grass-l1: #d8b4fe;
+    --grass-l2: #c084fc;
+    --grass-l3: #a855f7;
+    --grass-l4: #7e22ce;
   }
 
   :root.dark {
@@ -30,6 +36,12 @@
     --toast-border: rgba(255, 255, 255, 0.15);
     --toast-text: #ffffff;
     --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    --grass-l0: #252525;
+    --grass-l1: #4a0f77;
+    --grass-l2: #581c87;
+    --grass-l3: #7e22ce;
+    --grass-l4: #d8b4fe;
   }
 
   html {
