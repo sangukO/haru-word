@@ -6,6 +6,30 @@ import { Tooltip } from "react-tooltip";
 import React, { useEffect, useState, useMemo } from "react";
 import { SERVICE_START_DATE } from "@/constants/service";
 import Select from "@/components/ui/Select";
+import { Info, X } from "lucide-react";
+import SentenceHistoryList from "@/components/ai/SentenceHistoryList";
+import {
+  getLocalDateFromISO,
+  getFormattedKoreanMonthDay,
+  getFormattedKoreanDate,
+} from "@/utils/date";
+import Modal from "@/components/ui/Modal";
+
+type WordInfo = {
+  id: number;
+  word: string;
+  meaning: string;
+  categories?: { color: string }[] | null;
+};
+
+type Log = {
+  id: number;
+  created_at: string;
+  generated_sentence: string | null;
+  target_word_ids: number[] | null;
+  status: string;
+  user_id: string;
+};
 
 interface ActivityData {
   date: string;
@@ -15,10 +39,20 @@ interface ActivityData {
 
 interface ActivityCalendarProps {
   data: ActivityData[];
+  logs: Log[];
+  words: WordInfo[];
 }
 
-export default function ActivityCalendar({ data }: ActivityCalendarProps) {
+export default function ActivityCalendar({
+  data,
+  logs,
+  words,
+}: ActivityCalendarProps) {
   const [mounted, setMounted] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
   const currentYear = new Date().getFullYear();
 
   const startYear = useMemo(() => {
@@ -77,6 +111,23 @@ export default function ActivityCalendar({ data }: ActivityCalendarProps) {
     ],
   };
 
+  // 날짜 클릭 핸들러
+  const handleBlockClick = (date: string, count: number) => {
+    if (count > 0) {
+      setSelectedDate(date);
+      setIsModalOpen(true);
+    }
+  };
+
+  // 선택된 날짜의 로그 필터링
+  const filteredLogs = useMemo(() => {
+    if (!selectedDate) return [];
+
+    return logs.filter((log) => {
+      return getLocalDateFromISO(log.created_at) === selectedDate;
+    });
+  }, [selectedDate, logs]);
+
   if (!mounted) return null;
 
   return (
@@ -86,24 +137,11 @@ export default function ActivityCalendar({ data }: ActivityCalendarProps) {
           <span className="text-sm text-gray-600 dark:text-gray-400 font-bold">
             2026년도 총 {totalCount}회 활동
           </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-info-icon lucide-info text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-help outline-none"
+          <Info
+            className="w-4.5 h-4.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-help outline-none"
             data-tooltip-id="react-tooltip"
-            data-tooltip-content="매일 출석과 AI 예문 생성 횟수가 합산된 총 활동 횟수입니다."
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-          </svg>
+            data-tooltip-content={`총 활동 = 출석 + 예문 생성 횟수\n클릭 시 그날 만든 예문을 볼 수 있어요.`}
+          />
         </div>
         <div>
           <Select
@@ -145,18 +183,49 @@ export default function ActivityCalendar({ data }: ActivityCalendarProps) {
             },
           }}
           // div 대신 cloneElement 사용
-          renderBlock={(block: React.ReactElement, activity: Activity) => {
+          renderBlock={(
+            block: React.ReactElement<{ style?: React.CSSProperties }>,
+            activity: Activity
+          ) => {
+            const isClickable = activity.count >= 0;
+
+            const dateText = getFormattedKoreanMonthDay(activity.date);
+
             return React.cloneElement(block, {
               "data-tooltip-id": "react-tooltip",
-              "data-tooltip-content": `${activity.date}: ${activity.count}회 학습`,
+              "data-tooltip-content": `${dateText}: ${activity.count}회 학습`,
+              style: {
+                ...block.props.style,
+                outline: "none",
+                cursor: isClickable ? "pointer" : "default",
+              },
+              onClick: () => {
+                if (isClickable) {
+                  handleBlockClick(activity.date, activity.count);
+                }
+              },
             } as any);
           }}
         />
         <Tooltip
           id="react-tooltip"
-          className="bg-black! px-2! py-1! rounded! text-xs! z-50!"
+          className="bg-black! px-2! py-1! rounded! text-xs! z-50! whitespace-pre-wrap!"
         />
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={`${getFormattedKoreanDate(selectedDate || "")} 기록`}
+      >
+        <div className="flex flex-col h-full gap-4">
+          {/* 리스트 컴포넌트 */}
+          <SentenceHistoryList
+            logs={filteredLogs}
+            words={words}
+            emptyMessage="이 날은 출석만 하고 예문은 안 만들었네요!"
+          />
+        </div>
+      </Modal>
     </>
   );
 }
