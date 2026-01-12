@@ -2,11 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { getFormatDateToString, getFormattedKoreanDate } from "@/utils/date";
 import "react-day-picker/dist/style.css";
 import { ko } from "react-day-picker/locale";
