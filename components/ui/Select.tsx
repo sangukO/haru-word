@@ -10,6 +10,7 @@ interface SelectProps<T> {
   onChange: (value: T) => void;
   label?: string; // "Year:" 같은 라벨
   formatLabel?: (value: T) => string; // "2026" -> "2026년" 변환기 (선택사항)
+  className?: string; // 커스텀 스타일
 }
 
 export default function Select<T extends string | number>({
@@ -18,6 +19,7 @@ export default function Select<T extends string | number>({
   onChange,
   label,
   formatLabel = (v) => String(v), // 기본값은 그냥 문자열 변환
+  className = "",
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,11 +39,12 @@ export default function Select<T extends string | number>({
   }, []);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className={`relative w-full ${className}`} ref={containerRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md border cursor-pointer
+          w-full h-full flex items-center justify-between gap-2 px-3 py-1.5 text-xs font-medium rounded-md border cursor-pointer
           ${
             isOpen
               ? "bg-gray-100 border-gray-300 text-gray-900 dark:bg-[#2d333b] dark:border-gray-500 dark:text-white"
@@ -60,7 +63,7 @@ export default function Select<T extends string | number>({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-32 z-50 origin-top-right bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#444] rounded-lg shadow-xl overflow-hidden focus:outline-none animate-in fade-in zoom-in-95">
+        <div className="absolute right-0 top-full mt-2 w-full z-50 origin-top-right bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#444] rounded-lg shadow-xl overflow-hidden focus:outline-none animate-in fade-in zoom-in-95">
           <div className="py-1">
             {label && (
               <div className="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-[#333] cursor-default">
@@ -70,6 +73,7 @@ export default function Select<T extends string | number>({
             {options.map((option) => (
               <button
                 key={String(option)}
+                type="button"
                 onClick={() => {
                   onChange(option);
                   setIsOpen(false);

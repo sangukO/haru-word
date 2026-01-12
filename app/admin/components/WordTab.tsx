@@ -8,6 +8,8 @@ import ConfirmToast from "@/components/ui/ConfirmToast";
 import SearchBar from "@/components/ui/SearchBar";
 import { Plus } from "lucide-react";
 import Modal from "@/components/ui/Modal";
+import Select from "@/components/ui/Select";
+import DatePicker from "@/components/ui/DatePicker";
 
 interface Category {
   id: string;
@@ -390,13 +392,10 @@ export default function WordTab({ initialWords, categories }: Props) {
         <form onSubmit={handleSave} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">날짜</label>
-            <input
-              type="date"
-              required
-              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
+            <DatePicker
+              date={formData.date}
+              onChange={(newDate) =>
+                setFormData({ ...formData, date: newDate })
               }
             />
           </div>
@@ -454,20 +453,21 @@ export default function WordTab({ initialWords, categories }: Props) {
 
           <div>
             <label className="block text-sm font-medium mb-1">카테고리</label>
-            <select
-              className="w-full p-2 border rounded dark:bg-[#2c2c2c] dark:border-[#444]"
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-            >
-              <option value="">선택 안 함</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <Select
+                value={formData.category}
+                options={["", ...categories.map((c) => c.id)]}
+                onChange={(value) =>
+                  setFormData({ ...formData, category: value as string })
+                }
+                formatLabel={(id) => {
+                  if (id === "") return "선택 안 함";
+                  const found = categories.find((c) => c.id === id);
+                  return found ? found.name : String(id);
+                }}
+                className="w-full h-10.5"
+              />
+            </div>
           </div>
 
           <div>
