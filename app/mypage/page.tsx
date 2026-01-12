@@ -64,11 +64,26 @@ export default async function MyPage() {
       .from("user_daily_visits")
       .select("visit_date")
       .eq("user_id", user.id),
-    supabase.from("ai_usage_logs").select("created_at").eq("user_id", user.id),
+    supabase
+      .from("ai_usage_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "SUCCESS")
+      .order("created_at", { ascending: false }),
   ]);
 
   const visits = visitsResult.data || [];
-  const aiLogs = aiLogsResult.data || [];
+  const logs = aiLogsResult.data || [];
+
+  // 로그에 포함된 단어 ID 추출 및 단어 데이터 조회
+  const allWordIds = Array.from(
+    new Set(logs.flatMap((log) => log.target_word_ids || []))
+  );
+
+  const { data: words } = await supabase
+    .from("words")
+    .select("id, word, meaning, categories ( color )")
+    .in("id", allWordIds);
 
   // 점수 집계 (Map)
   const activityMap = new Map<string, number>();
@@ -81,7 +96,7 @@ export default async function MyPage() {
   });
 
   // AI 생성 점수
-  aiLogs.forEach((log) => {
+  logs.forEach((log) => {
     // 로그 생성 날짜를 가져와서 로컬 날짜로 변환
     const logDate = new Date(log.created_at);
     const dateStr = getLocalDateString(logDate);
@@ -118,7 +133,7 @@ export default async function MyPage() {
         {/* 유저 계정 정보 */}
         <div className="flex flex-1 flex-row items-center p-8 gap-6">
           <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white dark:border-[#333] shadow-md ring-1 ring-gray-100 dark:ring-gray-800">
+            <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-300 dark:border-gray-600">
               <img
                 src={avatarUrl}
                 alt="프로필"
@@ -186,7 +201,7 @@ export default async function MyPage() {
       {/* 중단 */}
       {/* 학습 기록 */}
       <div className="flex flex-col w-full">
-        <ActivityCalendar data={grassData} />
+        <ActivityCalendar data={grassData} logs={logs} words={words || []} />
       </div>
 
       {/* 하단 */}
