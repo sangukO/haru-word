@@ -1,7 +1,8 @@
 "use client";
 
-import { Upload } from "lucide-react";
+import { Copy, Link } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   text: string; // 공유할 텍스트
@@ -9,12 +10,12 @@ interface Props {
 }
 
 export default function ShareButton({ text, url }: Props) {
-  const [isCopied, setIsCopied] = useState(false);
-
   const handleShare = async () => {
     const shareUrl = url
       ? `${window.location.origin}${url}`
       : window.location.href;
+
+    toast.success("링크가 복사되었습니다!");
 
     // 모바일 기기 확인
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -34,8 +35,6 @@ export default function ShareButton({ text, url }: Props) {
     else {
       try {
         await navigator.clipboard.writeText(shareUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
         console.error("클립보드 복사 실패:", error);
       }
@@ -45,14 +44,11 @@ export default function ShareButton({ text, url }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs text-sub hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-      aria-label="공유하기"
+      className="flex items-center justify-center w-7.5 h-7.5 rounded bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 cursor-pointer outline-none shrink-0"
+      aria-label="링크 복사"
+      title="링크 복사"
     >
-      {/* 공유 아이콘 (SVG) */}
-      <Upload size={14} />
-
-      {/* 상태에 따라 텍스트 변경 */}
-      <span>{isCopied ? "링크 복사됨!" : "공유하기"}</span>
+      <Link size={15} strokeWidth={2.5} />
     </button>
   );
 }
