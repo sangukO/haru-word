@@ -54,7 +54,7 @@ export default function AdminAiHistoryItem({
 
   return (
     <div
-      className={`rounded-xl p-5 border shadow-sm transition-all h-full flex flex-col ${
+      className={`rounded-xl p-5 border shadow-sm transition-colors h-full flex flex-col ${
         isSuccess
           ? "bg-white dark:bg-[#1E1E1E] border-gray-200 dark:border-[#333]"
           : "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30"

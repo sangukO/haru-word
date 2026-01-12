@@ -107,7 +107,7 @@ export default function Header({
   return (
     <>
       {/* 메인 헤더 */}
-      <header className="relative w-full md:max-w-300 mx-auto bg-white dark:bg-[#121212] text-black dark:text-white border-b border-black dark:border-white z-40 transition-colors duration-200 ease-in-out">
+      <header className="relative w-full md:max-w-300 mx-auto text-black dark:text-white border-b border-black dark:border-white z-40">
         {/* 상단 유틸리티 바 */}
         <div className="max-w-300 mx-auto px-4 h-14 md:h-10 flex items-center justify-between text-[11px] md:text-xs font-medium tracking-wide md:border-b border-gray-200 dark:border-[#333]">
           {/* 왼쪽: 날짜 표시, 모바일은 로고 */}
@@ -188,7 +188,7 @@ export default function Header({
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`transition-colors ${
+                  className={`${
                     isActive
                       ? "text-black dark:text-white"
                       : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
@@ -262,7 +262,7 @@ export default function Header({
               ) : (
                 <Link
                   href="/login"
-                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white transition-all"
+                  className="text-sm font-bold px-3 py-1 rounded-sm hover:underline text-black dark:text-white"
                 >
                   로그인
                 </Link>

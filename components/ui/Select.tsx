@@ -41,7 +41,7 @@ export default function Select<T extends string | number>({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md border transition-color cursor-pointer
+          flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md border cursor-pointer
           ${
             isOpen
               ? "bg-gray-100 border-gray-300 text-gray-900 dark:bg-[#2d333b] dark:border-gray-500 dark:text-white"
@@ -55,14 +55,12 @@ export default function Select<T extends string | number>({
         </span>
         <ChevronDown
           size={14}
-          className={`transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-32 z-50 origin-top-right bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#444] rounded-lg shadow-xl overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute right-0 top-full mt-2 w-32 z-50 origin-top-right bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-[#444] rounded-lg shadow-xl overflow-hidden focus:outline-none animate-in fade-in zoom-in-95">
           <div className="py-1">
             {label && (
               <div className="px-3 py-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-[#333] cursor-default">

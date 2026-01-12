@@ -59,7 +59,7 @@ export default function WithdrawButton() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-gray-500 group-hover:text-red-500 transition-colors"
+          className="text-gray-500 group-hover:text-red-500"
         >
           <path d="M3 6h18" />
           <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
@@ -67,13 +67,13 @@ export default function WithdrawButton() {
         </svg>
 
         {/* 텍스트 */}
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-red-600 dark:group-hover:text-red-400">
           회원 탈퇴
         </span>
       </div>
 
       {/* 우측 설명 */}
-      <span className="text-xs text-gray-400 group-hover:text-red-400 transition-colors">
+      <span className="text-xs text-gray-400 group-hover:text-red-400">
         계정 삭제
       </span>
     </button>

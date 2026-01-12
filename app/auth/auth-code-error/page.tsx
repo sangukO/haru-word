@@ -15,13 +15,13 @@ export default function AuthErrorPage() {
       <div className="flex flex-col gap-4">
         <Link
           href="/login"
-          className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition-all shadow-lg hover:shadow-xl inline-block"
+          className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition shadow-lg hover:shadow-xl inline-block"
         >
           로그인 페이지로 이동
         </Link>
         <Link
           href="/"
-          className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition-all shadow-lg hover:shadow-xl inline-block"
+          className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition shadow-lg hover:shadow-xl inline-block"
         >
           홈 화면으로 돌아가기
         </Link>

@@ -121,7 +121,7 @@ export default function WordsList({
     <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-12">
       {/* 헤더 및 검색창 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold">단어 검색 🔎</h1>
+        <h1 className="text-3xl font-bold">단어 검색</h1>
 
         <SearchBar
           value={searchTerm}
@@ -134,7 +134,7 @@ export default function WordsList({
       <div className="flex flex-wrap gap-2 mb-8 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setSelectedCategory("all")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer ${
             selectedCategory === "all"
               ? "bg-black text-white dark:bg-white dark:text-black"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-gray-300 hover:dark:text-gray-600"
@@ -148,7 +148,7 @@ export default function WordsList({
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
               selectedCategory === cat.id
                 ? "bg-white dark:bg-[#1E1E1E]"
                 : "bg-white dark:bg-[#1E1E1E] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] border-[#e4e4e4] dark:border-[#313131]"

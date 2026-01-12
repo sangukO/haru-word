@@ -21,8 +21,8 @@ export default function SearchBar({
         flex items-center px-4 py-2.5 
         border border-gray-300 dark:border-[#333] 
         rounded-xl bg-white dark:bg-[#1E1E1E] 
-        focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-gray-500
-        transition-all ${className}
+        focus-within:border-black dark:focus-within:border-gray-400 
+        transition-colors ${className}
       `}
     >
       {/* 검색 아이콘 */}

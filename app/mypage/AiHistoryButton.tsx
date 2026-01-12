@@ -33,7 +33,7 @@ export default function AiHistoryButton() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-gray-500 group-hover:text-purple-600 transition-colors"
+          className="text-gray-500 group-hover:text-purple-600"
         >
           <rect width="18" height="10" x="3" y="11" rx="2" />
           <circle cx="12" cy="5" r="2" />
@@ -43,13 +43,13 @@ export default function AiHistoryButton() {
         </svg>
 
         {/* 텍스트 */}
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+        <span className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
           예문 기록
         </span>
       </div>
 
       {/* 우측 설명: 화살표나 '기록 보기' 텍스트 */}
-      <span className="text-xs text-gray-400 group-hover:text-purple-400 transition-colors flex items-center gap-1">
+      <span className="text-xs text-gray-400 group-hover:text-purple-400 flex items-center gap-1">
         기록 보기
         <svg
           xmlns="http://www.w3.org/2000/svg"

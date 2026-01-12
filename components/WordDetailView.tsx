@@ -79,7 +79,7 @@ export default function WordDetailView({
       {word.category && (
         <div className="flex justify-center mb-4">
           <button
-            className="py-1.5 px-2 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap border flex items-center gap-2
+            className="py-1.5 px-2 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap border flex items-center gap-2
               bg-white dark:bg-[#1E1E1E]"
           >
             <span
@@ -95,7 +95,7 @@ export default function WordDetailView({
       <div className="mb-6">
         {word.hanja && (
           <span
-            className="font-extrabold transition-color duration-200
+            className="font-extrabold
             font-serif text-6xl md:text-9xl
             text-[#111111] dark:text-[#F1F1F1]
             block mb-4"
@@ -148,9 +148,7 @@ export default function WordDetailView({
                   순화어:
                 </span>
                 <span
-                  className="transition-all duration-200
-                  brightness-[0.7] saturate-[1.2]
-                  dark:brightness-[1.8] dark:saturate-[1.5]"
+                  className="brightness-[0.7] saturate-[1.2] dark:brightness-[1.8] dark:saturate-[1.5]"
                   style={{ color: accentColor }}
                 >
                   {word.refined_word}

@@ -54,10 +54,9 @@
     background-color: var(--background);
     color: var(--text);
 
-    /* 폰트 및 부드러운 색상 전환 설정 */
+    /* 폰트 설정 */
     font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
       system-ui, Roboto, sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
   /* 제목 태그는 제목 색상 쓰도록 설정 */
   h1,
