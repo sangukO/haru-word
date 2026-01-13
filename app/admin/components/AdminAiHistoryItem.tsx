@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import Link from "next/link";
+import { Copy } from "lucide-react";
 
 type WordInfo = {
   id: number;
@@ -54,7 +55,7 @@ export default function AdminAiHistoryItem({
 
   return (
     <div
-      className={`rounded-xl p-5 border shadow-sm transition-all h-full flex flex-col ${
+      className={`rounded-xl p-5 border shadow-sm transition-colors h-full flex flex-col ${
         isSuccess
           ? "bg-white dark:bg-[#1E1E1E] border-gray-200 dark:border-[#333]"
           : "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30"
@@ -117,21 +118,7 @@ export default function AdminAiHistoryItem({
           </p>
           {/* 호버 시 복사 안내 아이콘 */}
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-purple-500"
-            >
-              <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-            </svg>
+            <Copy size={14} className="text-purple-500" />
           </div>
         </div>
       ) : (

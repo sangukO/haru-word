@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { generateSentencesWithAI } from "@/actions/ai";
 import { AI_DAILY_LIMIT, AI_LIMIT_MESSAGE } from "@/constants/service";
 import ResetTimer from "@/components/ResetTimer";
+import SearchBar from "@/components/ui/SearchBar";
+import Modal from "@/components/ui/Modal";
+import { Loader2, TimerReset } from "lucide-react";
 
 interface Props {
   initialCategories: Category[];
@@ -218,58 +221,23 @@ export default function MyWordList({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-[120px] md:pb-[60px]">
+    <div className="w-full max-w-5xl mx-auto px-6 pt-8 pb-30 md:pb-15">
       {/* 헤더 및 검색창 */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold">내 단어장 📒</h1>
+        <h1 className="text-3xl font-bold">내 단어장</h1>
         <div className="flex items-center gap-2">
-          <div className="flex items-center w-full md:w-72 px-4 py-2.5 border border-gray-300 dark:border-[#333] rounded-xl bg-white dark:bg-[#1E1E1E] focus-within:ring-2 focus-within:ring-black transition-all">
-            <svg
-              className="h-5 w-5 text-gray-400 mr-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="검색할 단어를 입력하세요."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-sm placeholder-gray-400 text-gray-900 dark:text-white"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="ml-2 text-gray-400 hover:text-gray-600 cursor-pointer"
-              >
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            className="w-full md:w-72"
+          />
           <div>
             <button
               className={`
-                px-3 py-2.5 h-[42px] flex items-center rounded-xl font-bold transition-all duration-500 relative overflow-hidden group outline-none border cursor-pointer
+                px-3 py-2.5 h-10.5 flex items-center rounded-xl font-bold relative overflow-hidden group outline-none border cursor-pointer
                 ${
                   isAiMode
-                    ? "bg-purple-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.6)] border-transparent"
+                    ? "bg-transparent text-white shadow-[0_0_20px_rgba(168,85,247,0.6)] border-purple-600"
                     : "bg-transparent text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-[#333] hover:border-purple-400 hover:text-purple-400"
                 }
               `}
@@ -279,13 +247,13 @@ export default function MyWordList({
             >
               {/* 그라데이션 배경 레이어 */}
               <div
-                className={`absolute inset-0 bg-linear-to-r from-violet-600 via-purple-600 to-indigo-600 transition-opacity duration-500 ${
+                className={`absolute inset-0 bg-linear-to-r from-violet-600 via-purple-600 to-indigo-600 transition-opacity duration-200 ${
                   isAiMode ? "opacity-100" : "opacity-0"
                 }`}
               />
 
               {/* 텍스트 */}
-              <span className="relative flex items-center justify-center gap-2 w-20">
+              <span className="relative z-10 flex items-center justify-center gap-2 w-20">
                 {isAiMode ? "✨ 사용 중" : "✨ AI 예문"}
               </span>
             </button>
@@ -297,7 +265,7 @@ export default function MyWordList({
       <div className="flex flex-wrap gap-2 mb-8 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setSelectedCategory("all")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer ${
             selectedCategory === "all"
               ? "bg-black text-white dark:bg-white dark:text-black"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-gray-300"
@@ -310,7 +278,7 @@ export default function MyWordList({
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-sm font-medium border whitespace-nowrap flex items-center gap-2 cursor-pointer ${
               selectedCategory === cat.id
                 ? "bg-white dark:bg-[#1E1E1E]"
                 : "bg-white dark:bg-[#1E1E1E] hover:bg-gray-50 dark:hover:bg-[#2A2A2A] border-[#e4e4e4] dark:border-[#313131]"
@@ -376,7 +344,9 @@ export default function MyWordList({
               isBookmarked={true}
               onRemove={handleRemoveWord}
               className={
-                isAiMode ? "animate-shake-soft-effect hover:scale-110" : ""
+                isAiMode && !aiResult
+                  ? "animate-shake-soft-effect hover:scale-110"
+                  : ""
               }
               style={{ animationDelay: index % 2 === 0 ? "0s" : "0.15s" }}
               onClick={() => isAiMode && handleToggleSelect(word.id)}
@@ -388,7 +358,7 @@ export default function MyWordList({
           {isAiMode && (
             <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl">
               <div
-                className={`bg-white/80 dark:bg-[#1E1E1E]/90 backdrop-blur-md border border-purple-200 dark:border-purple-900 shadow-2xl rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300
+                className={`bg-white/80 dark:bg-[#1E1E1E]/90 backdrop-blur-md border border-purple-200 dark:border-purple-900 shadow-2xl rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 transition-colors
                     ${isClosing ? "animate-slide-down" : "animate-slide-up"}
                     `}
               >
@@ -421,7 +391,7 @@ export default function MyWordList({
                           return (
                             <span
                               key={id}
-                              className="animate-pop-in inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border transition-all cursor-default"
+                              className="animate-pop-in inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border transition-colors cursor-default"
                               style={{
                                 color: baseColor,
                                 backgroundColor: `${baseColor}20`,
@@ -466,7 +436,7 @@ export default function MyWordList({
                   }
                   onClick={handleGenerateAI}
                   className={`
-                    w-full md:w-[166px] px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all
+                    w-full md:w-41.5 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-transform
                     ${
                       // 오늘 횟수 마감
                       dailyUsageCount >= AI_DAILY_LIMIT
@@ -481,46 +451,12 @@ export default function MyWordList({
                 >
                   {isGenerating ? (
                     <div className="flex items-center w-full gap-4">
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
+                      <Loader2 className="animate-spin h-5 w-5 text-white" />
                       생성 중...
                     </div>
                   ) : dailyUsageCount >= 3 ? (
                     <span className="flex items-center justify-center gap-2 text-md text-red-500">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-timer-reset-icon lucide-timer-reset"
-                      >
-                        <path d="M10 2h4" />
-                        <path d="M12 14v-4" />
-                        <path d="M4 13a8 8 0 0 1 8-7 8 8 0 1 1-5.3 14L4 17.6" />
-                        <path d="M9 17H4v5" />
-                      </svg>
+                      <TimerReset size={18} />
                       <ResetTimer />
                     </span>
                   ) : selectedWords.length === 0 ? (
@@ -534,90 +470,99 @@ export default function MyWordList({
           )}
 
           {/* AI 결과 모달 */}
-          {aiResult && (
-            <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-              <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-purple-100 dark:border-purple-900 animate-scale-up">
-                {/* 타이틀 */}
-                <div className="flex justify-center items-center mb-6">
-                  <h3 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-indigo-600">
-                    AI 예문 생성 서비스
-                  </h3>
-                </div>
+          <Modal
+            isOpen={!!aiResult} // aiResult가 있으면 열림
+            onClose={() => {
+              setAiResult(null);
+              setSelectedWords([]);
+              setIsAiMode(false);
+            }}
+            // 커스텀 타이틀 전달
+            title={
+              <span className="bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-indigo-600">
+                AI 예문 생성 서비스
+              </span>
+            }
+            // 닫기 버튼 숨김 (디자인에 따라 선택)
+            hideCloseButton={true}
+          >
+            <div className="flex flex-wrap items-center gap-2 mb-10">
+              <span className="font-bold text-sm">선택된 단어: </span>
+              {selectedWords.map((id) => {
+                const wordObj = words.find((w) => w.id === id);
+                if (!wordObj) return null;
+                const baseColor = wordObj.categories?.color || "#a855f7";
+                return (
+                  <span
+                    key={id}
+                    className="px-3 py-1 rounded-full text-xs font-bold border cursor-default"
+                    style={{
+                      color: baseColor,
+                      backgroundColor: `${baseColor}20`,
+                      borderColor: `${baseColor}30`,
+                    }}
+                  >
+                    {wordObj.word}
+                  </span>
+                );
+              })}
+            </div>
 
-                <div className="flex flex-wrap items-center gap-2 mb-10">
-                  <span className="font-bold text-sm">선택된 단어: </span>
-                  {selectedWords.map((id) => {
-                    const wordObj = words.find((w) => w.id === id);
-                    if (!wordObj) return null;
-
-                    return (
-                      <span
-                        key={id}
-                        className="px-3 py-1 bg-purple-50 dark:bg-purple-900/20 text-gray-600 dark:text-gray-300 rounded-full text-xs font-bold border border-purple-100 dark:border-purple-800 cursor-default"
-                      >
-                        {wordObj.word}
-                      </span>
-                    );
-                  })}
-                </div>
-
-                {/* 복사 문구 */}
-                <div className="relative group mb-3">
-                  <div className="absolute -top-6 right-0 z-10">
-                    <span
-                      className="
+            {/* 복사 문구 */}
+            <div className="relative group mb-3">
+              <div className="absolute -top-6 right-0 z-10">
+                <span
+                  className="
                         flex items-center gap-1 text-xs font-bold 
                         text-purple-600 dark:text-purple-300
                         animate-pulse
                       "
-                    >
-                      예문을 클릭하여 복사해보세요!
-                    </span>
-                  </div>
+                >
+                  예문을 클릭하여 복사해보세요!
+                </span>
+              </div>
 
-                  {/* 예문 박스 */}
-                  <div
-                    onClick={() => {
-                      if (!aiResult) return;
-                      navigator.clipboard.writeText(aiResult);
-                      toast.success("클립보드에 복사되었습니다!");
-                    }}
-                    className="
+              {/* 예문 박스 */}
+              <div
+                onClick={() => {
+                  if (!aiResult) return;
+                  navigator.clipboard.writeText(aiResult);
+                  toast.success("클립보드에 복사되었습니다!");
+                }}
+                className="
                       cursor-pointer 
                       bg-purple-50 dark:bg-purple-900/20 
                       p-6 pt-6 rounded-xl 
                       border border-purple-100 dark:border-purple-800 
                       hover:bg-purple-100 dark:hover:bg-purple-900/30 
                       hover:border-purple-300 dark:hover:border-purple-600
-                      active:scale-[0.98] transition-all duration-200
+                      active:scale-[0.98] transition duration-200
                     "
-                  >
-                    <p className="text-lg leading-relaxed text-gray-800 dark:text-gray-100 break-keep select-none">
-                      "{aiResult}"
-                    </p>
-                  </div>
-                </div>
-                <div className="flex w-full justify-center items-center mb-3">
-                  <span className="font-bold text-sm">
-                    생성된 예문은 마이페이지에서 확인 가능합니다.
-                  </span>
-                </div>
-                {/* 확인 버튼 */}
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => {
-                      setAiResult(null);
-                      setSelectedWords([]);
-                      setIsAiMode(false);
-                    }}
-                    className="w-full py-3 rounded-xl text-md font-bold text-white bg-black dark:bg-white dark:text-black hover:opacity-80 transition-opacity cursor-pointer"
-                  >
-                    확인
-                  </button>
-                </div>
+              >
+                <p className="text-lg leading-relaxed text-gray-800 dark:text-gray-100 break-keep select-none">
+                  "{aiResult}"
+                </p>
               </div>
             </div>
-          )}
+            <div className="flex w-full justify-center items-center mb-3">
+              <span className="font-bold text-sm">
+                생성된 예문은 마이페이지에서 확인 가능합니다.
+              </span>
+            </div>
+            {/* 확인 버튼 */}
+            <div className="flex justify-end">
+              <button
+                onClick={() => {
+                  setAiResult(null);
+                  setSelectedWords([]);
+                  setIsAiMode(false);
+                }}
+                className="w-full py-3 rounded-xl text-md font-bold text-white bg-black dark:bg-white dark:text-black hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                확인
+              </button>
+            </div>
+          </Modal>
         </div>
       )}
     </div>

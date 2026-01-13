@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "sonner";
 import AuthCleanup from "@/components/AuthCleanup";
+import ThemeProvider from "@/components/ui/ThemeProvider";
+import AttendanceChecker from "@/components/AttendanceChecker";
 
 // 프리텐다드 폰트 설정
 const pretendard = localFont({
@@ -17,6 +19,16 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
+// PWA 및 iOS 최적화를 위한 Viewport 설정
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1, // 모바일 앱 느낌을 위해 줌 제한
+  userScalable: false,
+  viewportFit: "cover", // 노치 디자인 대응
+};
+
 // 메타데이터 설정
 export const metadata: Metadata = {
   metadataBase: new URL("https://haruword.com"),
@@ -24,8 +36,7 @@ export const metadata: Metadata = {
     template: "%s | 하루단어",
     default: "하루단어 | 직장인을 위한 오늘의 어휘",
   },
-  description:
-    "매일 자정, 당신의 일상에 지적인 결을 더합니다. 바쁜 성인을 위한 하루 한 단어 큐레이션 서비스.",
+  description: "매일 하나씩 쌓이는 교양, 하루단어",
   keywords: [
     "하루단어",
     "오늘의 단어",
@@ -41,8 +52,21 @@ export const metadata: Metadata = {
   authors: [{ name: "OSOSO" }],
   creator: "OSOSO",
   icons: {
-    icon: "/icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
   },
+
+  // PWA 관련 설정 추가
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "하루단어",
+  },
+
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
   openGraph: {
     title: "하루단어",
@@ -50,7 +74,7 @@ export const metadata: Metadata = {
     siteName: "하루단어",
     locale: "ko_KR",
     type: "website",
-    url: "https://haryword.com",
+    url: "https://haruword.com",
     // 썸네일 이미지 추가 시 주석 해제
     // images: [
     //   {
@@ -117,25 +141,28 @@ export default async function RootLayout({
   // }
 
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between`}
+        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out`}
       >
-        <AuthCleanup />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <Header user={user} todayFormatted={todayFormatted} />
-        <main className="flex-1 flex flex-col w-full">{children}</main>
-        <Footer />
-        <GoogleAnalytics gaId="G-782YRDQX7Q" />
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            className: "my-toast",
-          }}
-        />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthCleanup />
+          <AttendanceChecker user={user} />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          <Header user={user} todayFormatted={todayFormatted} />
+          <main className="flex-1 flex flex-col w-full">{children}</main>
+          <Footer />
+          <GoogleAnalytics gaId="G-782YRDQX7Q" />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              className: "my-toast",
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );

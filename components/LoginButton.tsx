@@ -50,14 +50,14 @@ export default function LoginButton({
       className={`
         group relative flex items-center justify-center 
         h-10 px-3 rounded-sm
-        border transition-all duration-200 ease-in-out cursor-pointer
+        border transition-shadow duration-200 ease-in-out cursor-pointer
         
-        bg-white 
-        text-[#1f1f1f] 
+        bg-white
+        text-[#1f1f1f]
         border-[#747775]
         
-        dark:bg-[#131314] 
-        dark:text-[#e3e3e3] 
+        dark:bg-[#131314]
+        dark:text-[#e3e3e3]
         dark:border-[#8e918f]
 
         hover:shadow-[0_1px_2px_0_rgba(60,64,67,0.30),0_1px_3px_1px_rgba(60,64,67,0.15)]

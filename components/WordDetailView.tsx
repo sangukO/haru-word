@@ -1,11 +1,12 @@
 import Link from "next/link";
 import ColorSetter from "@/components/ColorSetter";
-import ShareButton from "@/components/ShareButton";
+import ShareButton from "@/components/ui/ShareButton";
 import PageLoginSection from "@/components/PageLoginSection";
 import { DEFAULT_THEME_COLOR } from "@/constants/theme";
 import { getTodayDate } from "@/utils/date";
 import { Word } from "@/types";
 import BookmarkButton from "./BookmarkButton";
+import KakaoShareButton from "./ui/KakaoShareButton";
 
 // 필요한 데이터 타입 정의
 interface WordDetailViewProps {
@@ -28,8 +29,11 @@ export default function WordDetailView({
   const today = getTodayDate();
   const isToday = word.date === today;
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const ogImageUrl = `${baseUrl}/words/${word.id}/opengraph-image`;
+
   return (
-    <article className="max-w-[1200px] w-full text-center">
+    <article className="max-w-300 w-full text-center">
       <ColorSetter color={accentColor} />
       {/* 네비게이션 */}
       <nav className="grid grid-cols-3 items-center pt-4 pb-4 text-sm w-full">
@@ -79,7 +83,7 @@ export default function WordDetailView({
       {word.category && (
         <div className="flex justify-center mb-4">
           <button
-            className="py-1.5 px-2 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap border flex items-center gap-2
+            className="py-1.5 px-2 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap border flex items-center gap-2
               bg-white dark:bg-[#1E1E1E]"
           >
             <span
@@ -95,7 +99,7 @@ export default function WordDetailView({
       <div className="mb-6">
         {word.hanja && (
           <span
-            className="font-extrabold transition-all duration-300
+            className="font-extrabold
             font-serif text-6xl md:text-9xl
             text-[#111111] dark:text-[#F1F1F1]
             block mb-4"
@@ -148,9 +152,7 @@ export default function WordDetailView({
                   순화어:
                 </span>
                 <span
-                  className="transition-all duration-300
-                  brightness-[0.7] saturate-[1.2]
-                  dark:brightness-[1.8] dark:saturate-[1.5]"
+                  className="brightness-[0.7] saturate-[1.2] dark:brightness-[1.8] dark:saturate-[1.5]"
                   style={{ color: accentColor }}
                 >
                   {word.refined_word}
@@ -170,8 +172,29 @@ export default function WordDetailView({
       )}
 
       {/* 공유 버튼 */}
-      <div className="flex justify-center mt-8 mb-4">
-        <ShareButton text={shareText} url={sharePath} />
+      <div className="w-full max-w-md mx-auto mt-12 mb-8">
+        <div className="relative flex items-center justify-center w-full mb-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+          </div>
+          <span className="relative px-3 text-sm text-gray-400 bg-white dark:bg-gray-900">
+            공유하기
+          </span>
+        </div>
+
+        {/* 버튼 영역 */}
+        <div className="flex items-center justify-center gap-5">
+          {/* 카카오 버튼 */}
+          <KakaoShareButton
+            title="당신의 어휘력은 몇 점인가요? 🤔"
+            description={`단어 '${word.word}', 뜻을 정확히 알고 계신가요?`}
+            imageUrl={ogImageUrl}
+            link={sharePath}
+          />
+
+          {/* 링크 복사 버튼 */}
+          <ShareButton text={shareText} url={sharePath} />
+        </div>
       </div>
 
       {/* <PageLoginSection user={user} /> */}

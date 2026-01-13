@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   /* 색상 변수 정의 */
   :root {
@@ -14,22 +16,32 @@
     --toast-border: rgba(255, 255, 255, 0.6);
     --toast-text: #111111;
     --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+    --grass-l0: #eff2f5;
+    --grass-l1: #d8b4fe;
+    --grass-l2: #c084fc;
+    --grass-l3: #a855f7;
+    --grass-l4: #7e22ce;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #121212;
-      --title: #f1f1f1;
-      --text: #d0d0d0;
-      --text-sub: #888888;
+  :root.dark {
+    --background: #121212;
+    --title: #f1f1f1;
+    --text: #d0d0d0;
+    --text-sub: #888888;
 
-      --toast-bg-start: rgba(40, 40, 40, 0.7);
-      --toast-bg-end: rgba(40, 40, 40, 0.4);
+    --toast-bg-start: rgba(40, 40, 40, 0.7);
+    --toast-bg-end: rgba(40, 40, 40, 0.4);
 
-      --toast-border: rgba(255, 255, 255, 0.15);
-      --toast-text: #ffffff;
-      --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
+    --toast-border: rgba(255, 255, 255, 0.15);
+    --toast-text: #ffffff;
+    --toast-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    --grass-l0: #252525;
+    --grass-l1: #4a0f77;
+    --grass-l2: #581c87;
+    --grass-l3: #7e22ce;
+    --grass-l4: #d8b4fe;
   }
 
   html {
@@ -42,10 +54,9 @@
     background-color: var(--background);
     color: var(--text);
 
-    /* 폰트 및 부드러운 색상 전환 설정 */
+    /* 폰트 설정 */
     font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
       system-ui, Roboto, sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
   /* 제목 태그는 제목 색상 쓰도록 설정 */
   h1,
@@ -106,26 +117,25 @@
 }
 
 /* 토스트 메시지 다크모드 스타일 */
-@media (prefers-color-scheme: dark) {
-  [data-sonner-toast] {
-    background: rgba(20, 20, 20, 0.8) !important;
-    color: #ffffff !important;
 
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
+.dark [data-sonner-toast] {
+  background: rgba(20, 20, 20, 0.8) !important;
+  color: #ffffff !important;
 
-    border: 1px solid color-mix(in srgb, var(--neon-color), black 60%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+  backdrop-filter: blur(15px) saturate(180%) !important;
 
-    box-shadow: 0 0 15px color-mix(in srgb, var(--neon-color), black 60%),
-      inset 0 0 5px color-mix(in srgb, var(--neon-color), black 60%),
-      0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid color-mix(in srgb, var(--neon-color), black 60%) !important;
 
-    font-family: var(--font-pretendard), sans-serif !important;
-  }
+  box-shadow: 0 0 15px color-mix(in srgb, var(--neon-color), black 60%),
+    inset 0 0 5px color-mix(in srgb, var(--neon-color), black 60%),
+    0 8px 32px rgba(0, 0, 0, 0.5) !important;
 
-  [data-sonner-toast] [data-description] {
-    color: #c9c9c9 !important;
-  }
+  font-family: var(--font-pretendard), sans-serif !important;
+}
+
+.dark [data-sonner-toast] [data-description] {
+  color: #c9c9c9 !important;
 }
 
 /* 가변 폰트 전용 굵기 웨이브 */

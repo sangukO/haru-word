@@ -25,7 +25,7 @@ export default function NotFound() {
         <div className="pt-8">
           <Link
             href="/"
-            className="px-8 py-3.5 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition-all shadow-lg hover:shadow-xl inline-block"
+            className="px-8 py-3.5 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full hover:opacity-80 transition shadow-lg hover:shadow-xl inline-block"
           >
             오늘의 단어 보러 가기
           </Link>
