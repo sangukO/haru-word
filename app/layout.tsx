@@ -52,8 +52,12 @@ export const metadata: Metadata = {
   authors: [{ name: "OSOSO" }],
   creator: "OSOSO",
   icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png", // app/apple-icon.png 자동 인식
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
   },
 
   // PWA 관련 설정 추가
@@ -61,7 +65,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "하루단어",
-    // startupImage: [] // 필요한 경우 기기별 로딩 이미지 지정 가능
   },
 
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
