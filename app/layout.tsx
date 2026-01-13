@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
@@ -19,6 +19,16 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
+// PWA 및 iOS 최적화를 위한 Viewport 설정
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1, // 모바일 앱 느낌을 위해 줌 제한
+  userScalable: false,
+  viewportFit: "cover", // 노치 디자인 대응
+};
+
 // 메타데이터 설정
 export const metadata: Metadata = {
   metadataBase: new URL("https://haruword.com"),
@@ -26,8 +36,7 @@ export const metadata: Metadata = {
     template: "%s | 하루단어",
     default: "하루단어 | 직장인을 위한 오늘의 어휘",
   },
-  description:
-    "매일 자정, 당신의 일상에 지적인 결을 더합니다. 바쁜 성인을 위한 하루 한 단어 큐레이션 서비스.",
+  description: "매일 하나씩 쌓이는 교양, 하루단어",
   keywords: [
     "하루단어",
     "오늘의 단어",
@@ -44,7 +53,17 @@ export const metadata: Metadata = {
   creator: "OSOSO",
   icons: {
     icon: "/icon.png",
+    apple: "/apple-icon.png", // app/apple-icon.png 자동 인식
   },
+
+  // PWA 관련 설정 추가
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "하루단어",
+    // startupImage: [] // 필요한 경우 기기별 로딩 이미지 지정 가능
+  },
+
   // OpenGraph 메타데이터 (공유 시 미리보기) 정보
   openGraph: {
     title: "하루단어",
@@ -52,7 +71,7 @@ export const metadata: Metadata = {
     siteName: "하루단어",
     locale: "ko_KR",
     type: "website",
-    url: "https://haryword.com",
+    url: "https://haruword.com",
     // 썸네일 이미지 추가 시 주석 해제
     // images: [
     //   {
