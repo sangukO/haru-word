@@ -68,7 +68,7 @@ export default function DatePicker({
             className="text-gray-500 dark:text-gray-400"
           />
           {selectedDate ? (
-            <span className="font-medium text-gray-900 dark:text-white">
+            <span className="font-medium">
               {getFormattedKoreanDate(getFormatDateToString(selectedDate))}
             </span>
           ) : (

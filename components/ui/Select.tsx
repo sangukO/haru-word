@@ -53,9 +53,7 @@ export default function Select<T extends string | number>({
         `}
       >
         {label && <span>{label}</span>}
-        <span className="font-bold text-gray-900 dark:text-white">
-          {formatLabel(value)}
-        </span>
+        <span className="font-bold">{formatLabel(value)}</span>
         <ChevronDown
           size={14}
           className={`transition-transform ${isOpen ? "rotate-180" : ""}`}

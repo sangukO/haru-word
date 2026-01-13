@@ -44,7 +44,7 @@ export default function ShareButton({ text, url }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center justify-center w-7.5 h-7.5 rounded bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 cursor-pointer outline-none shrink-0"
+      className="flex items-center justify-center w-7 h-7 rounded bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 cursor-pointer outline-none shrink-0"
       aria-label="링크 복사"
       title="링크 복사"
     >
