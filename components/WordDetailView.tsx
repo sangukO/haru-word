@@ -42,7 +42,7 @@ export default function WordDetailView({
           {prevWord ? (
             <Link
               href={`/words/${prevWord.id}`}
-              className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              className="flex items-center gap-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               ← {prevWord.date.slice(5)}
             </Link>
@@ -56,7 +56,7 @@ export default function WordDetailView({
           {!isToday ? (
             <Link
               href="/"
-              className="text-xs text-sub hover:underline hover:font-extrabold underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              className="text-xs text-gray-600 dark:text-gray-300 hover:underline hover:font-extrabold underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               오늘
             </Link>
@@ -70,7 +70,7 @@ export default function WordDetailView({
           {nextWord ? (
             <Link
               href={`/words/${nextWord.id}`}
-              className="flex items-center gap-1 text-sub hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              className="flex items-center gap-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             >
               {nextWord.date.slice(5)} →
             </Link>
@@ -177,7 +177,7 @@ export default function WordDetailView({
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
           </div>
-          <span className="relative px-3 text-sm text-gray-400 bg-white dark:bg-gray-900">
+          <span className="relative px-3 text-sm bg-white dark:bg-gray-900">
             공유하기
           </span>
         </div>

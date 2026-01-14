@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+// import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -10,22 +10,24 @@ import { Toaster } from "sonner";
 import AuthCleanup from "@/components/AuthCleanup";
 import ThemeProvider from "@/components/ui/ThemeProvider";
 import AttendanceChecker from "@/components/AttendanceChecker";
+import KakaoScript from "@/components/KakaoScript";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // 프리텐다드 폰트 설정
-const pretendard = localFont({
-  src: "./fonts/PretendardVariable.woff2",
-  display: "swap", // 글자 안 보임 방지
-  weight: "45 920", // 가변 폰트 범위 설정
-  variable: "--font-pretendard",
-});
+// const pretendard = localFont({
+//   src: "./fonts/PretendardVariable.woff2",
+//   display: "swap", // 글자 안 보임 방지
+//   weight: "45 920", // 가변 폰트 범위 설정
+//   variable: "--font-pretendard",
+// });
 
 // PWA 및 iOS 최적화를 위한 Viewport 설정
 export const viewport: Viewport = {
   themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1, // 모바일 앱 느낌을 위해 줌 제한
-  userScalable: false,
+  maximumScale: 5, // 접근성 준수를 위해 확대 허용
+  userScalable: true,
   viewportFit: "cover", // 노치 디자인 대응
 };
 
@@ -117,10 +119,17 @@ export default async function RootLayout({
   };
 
   // 서버에서 유저 정보 확인
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  // 에러가 나도 동작되도록 try catch 추가
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getUser();
+    if (!error && data?.user) {
+      user = data.user;
+    }
+  } catch (err) {
+    console.error("Supabase Error:", err);
+  }
 
   const todayFormatted = getFormattedDate();
 
@@ -142,10 +151,20 @@ export default async function RootLayout({
 
   return (
     <html lang="ko" suppressHydrationWarning>
+      <head>
+        <link
+          rel="stylesheet"
+          as="style"
+          crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css"
+        />
+      </head>
       <body
-        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out`}
+        // ${pretendard.variable}
+        className="font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out"
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <SpeedInsights />
           <AuthCleanup />
           <AttendanceChecker user={user} />
           <script
@@ -156,6 +175,7 @@ export default async function RootLayout({
           <main className="flex-1 flex flex-col w-full">{children}</main>
           <Footer />
           <GoogleAnalytics gaId="G-782YRDQX7Q" />
+          <KakaoScript />
           <Toaster
             position="top-center"
             toastOptions={{
