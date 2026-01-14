@@ -126,6 +126,7 @@ export default function Header({
             <button
               className="md:hidden p-1"
               onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="mobile-menu"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -265,6 +266,7 @@ export default function Header({
             <button
               className="md:hidden p-1"
               onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="mobile-menu"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -294,6 +296,7 @@ export default function Header({
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:bg-gray-100 dark:hover:bg-[#333] rounded-full transition-colors"
+              aria-label="close"
             >
               <X className="w-6 h-6 text-gray-500" />
             </button>
