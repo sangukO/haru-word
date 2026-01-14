@@ -181,7 +181,7 @@ export default function Header({
                   className={`${
                     isActive
                       ? "text-black dark:text-white"
-                      : "text-gray-500 hover:text-gray-600 dark:hover:text-gray-200"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                   }`}
                 >
                   {link.name}
@@ -285,7 +285,7 @@ export default function Header({
 
       {/* 슬라이드 패널 */}
       <div
-        className={`fixed top-0 right-0 h-full w-[80%] max-w-75 bg-white dark:bg-[#1E1E1E] z-70 transform transition-transform duration-200 ease-in-out shadow-2xl ${
+        className={`fixed top-0 right-0 h-full w-[80%] max-w-75 bg-white dark:bg-[#161616] z-70 transform transition-transform duration-200 ease-in-out shadow-2xl ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -329,7 +329,7 @@ export default function Header({
                       <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
                     {/* 화살표 아이콘 */}
-                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200" />
+                    <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-200" />
                   </div>
                 </Link>
 
@@ -338,7 +338,7 @@ export default function Header({
 
                 {/* 메인 메뉴 그룹 */}
                 <div className="flex flex-col gap-1">
-                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                  <p className="px-2 text-xs font-bold text-gray-500 mb-2">
                     탐색
                   </p>
                   <Link
@@ -362,7 +362,7 @@ export default function Header({
 
                 {/* 개인 메뉴 그룹 */}
                 <div className="flex flex-col gap-1">
-                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                  <p className="px-2 text-xs font-bold text-gray-500 mb-2">
                     내 활동
                   </p>
                   <Link
@@ -385,7 +385,7 @@ export default function Header({
                   <>
                     <div className="border-t border-gray-100 dark:border-[#333] my-4"></div>
                     <div className="flex flex-col gap-1">
-                      <p className="px-2 text-xs font-bold text-gray-400 mb-2">
+                      <p className="px-2 text-xs font-bold text-gray-500 mb-2">
                         관리
                       </p>
                       <Link
@@ -414,9 +414,7 @@ export default function Header({
               // 비로그인 상태
               <div className="flex flex-col h-full">
                 <div className="flex flex-col gap-1">
-                  <p className="px-2 text-xs font-bold text-gray-400 mb-2">
-                    탐색
-                  </p>
+                  <p className="px-2 text-xs font-bold mb-2">탐색</p>
                   <Link
                     href="/"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -434,7 +432,7 @@ export default function Header({
                 </div>
 
                 <div className="mt-auto bg-gray-50 dark:bg-[#2A2A2A] p-6 rounded-xl text-center mb-6">
-                  <p className="text-gray-500 text-sm mb-4">
+                  <p className="text-sm mb-4">
                     로그인하고 나만의 단어장을
                     <br />
                     만들어보세요.
@@ -447,7 +445,7 @@ export default function Header({
             )}
 
             {/* 날짜 표시 */}
-            <div className="relative flex justify-center items-center text-center text-[10px] text-gray-300 dark:text-gray-600 mt-4">
+            <div className="relative flex justify-center items-center text-center text-[10px] mt-4">
               {todayFormatted}
               <div className="flex absolute right-0">
                 <ThemeToggleButton />
