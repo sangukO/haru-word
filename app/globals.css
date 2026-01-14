@@ -1,3 +1,4 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -54,9 +55,9 @@
     background-color: var(--background);
     color: var(--text);
 
-    /* 폰트 설정 */
-    font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
-      system-ui, Roboto, sans-serif;
+    /* font-family 변수 제거 및 직접 명시 */
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+      Roboto, sans-serif;
   }
   /* 제목 태그는 제목 색상 쓰도록 설정 */
   h1,
@@ -92,8 +93,8 @@
     font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   }
   .font-sans {
-    font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont,
-      system-ui, Roboto, sans-serif !important;
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+      Roboto, sans-serif !important;
   }
 }
 

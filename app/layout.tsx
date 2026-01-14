@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+// import localFont from "next/font/local";
 import "./globals.css";
 import { getFormattedDate } from "@/utils/date";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -12,12 +12,12 @@ import ThemeProvider from "@/components/ui/ThemeProvider";
 import AttendanceChecker from "@/components/AttendanceChecker";
 
 // 프리텐다드 폰트 설정
-const pretendard = localFont({
-  src: "./fonts/PretendardVariable.woff2",
-  display: "swap", // 글자 안 보임 방지
-  weight: "45 920", // 가변 폰트 범위 설정
-  variable: "--font-pretendard",
-});
+// const pretendard = localFont({
+//   src: "./fonts/PretendardVariable.woff2",
+//   display: "swap", // 글자 안 보임 방지
+//   weight: "45 920", // 가변 폰트 범위 설정
+//   variable: "--font-pretendard",
+// });
 
 // PWA 및 iOS 최적화를 위한 Viewport 설정
 export const viewport: Viewport = {
@@ -143,7 +143,8 @@ export default async function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body
-        className={`${pretendard.variable} font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out`}
+        // ${pretendard.variable}
+        className="font-sans h-dvh flex flex-col justify-between transition-colors duration-200 ease-in-out"
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthCleanup />
