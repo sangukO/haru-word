@@ -61,7 +61,7 @@ export default function AdminAiHistoryItem({
           : "bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30"
       }`}
     >
-      {/* 상단: 유저 정보 & 날짜 & 상태 뱃지 */}
+      {/* 유저 정보, 날짜, 상태 뱃지 */}
       <div className="flex justify-between items-start mb-4 shrink-0">
         <div className="flex items-center gap-3">
           {/* 유저 아바타 */}
@@ -69,7 +69,7 @@ export default function AdminAiHistoryItem({
             {user?.avatar_url ? (
               <img
                 src={user.avatar_url}
-                alt="프사"
+                alt="프로필"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -79,7 +79,7 @@ export default function AdminAiHistoryItem({
             )}
           </div>
 
-          {/* 유저 이름 & 이메일 */}
+          {/* 유저 이름 및 이메일 */}
           <div className="flex flex-col">
             <span className="text-sm font-bold text-gray-900 dark:text-white">
               {user?.nickname || "알 수 없음"}
@@ -90,7 +90,7 @@ export default function AdminAiHistoryItem({
           </div>
         </div>
 
-        {/* 우측: 날짜 & 상태 */}
+        {/* 날짜 및 상태 */}
         <div className="flex flex-col items-end gap-1">
           <span className="text-xs text-gray-400 font-medium">
             {formatDate(log.created_at)}
@@ -107,7 +107,7 @@ export default function AdminAiHistoryItem({
         </div>
       </div>
 
-      {/* 중간: 문장 또는 에러 메시지 */}
+      {/* 문장 또는 에러 메시지 */}
       {isSuccess ? (
         <div
           onClick={handleCopy}
@@ -129,7 +129,7 @@ export default function AdminAiHistoryItem({
         </div>
       )}
 
-      {/* 하단: 사용된 단어들 */}
+      {/* 사용된 단어들 */}
       <div className="mt-3 flex flex-wrap gap-1.5 shrink-0">
         {usedWords.map((word) => {
           const color = word.categories?.color || "#a855f7";
