@@ -181,7 +181,7 @@ export default function WordTab({ initialWords, categories }: Props) {
   return (
     <div>
       {/* 상단 컨트롤러 (공통) */}
-      <div className="flex gap-4 w-full mb-6">
+      <div className="flex items-center gap-4 w-full mb-6 relative">
         <SearchBar
           value={searchTerm}
           onChange={setSearchTerm}
@@ -189,9 +189,20 @@ export default function WordTab({ initialWords, categories }: Props) {
         />
         <button
           onClick={() => openModal()}
-          className="flex justify-between items-center bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 px-3 py-2 rounded-lg font-bold whitespace-nowrap cursor-pointer"
+          className="
+            flex justify-center items-center bg-black text-white hover:bg-gray-800 
+            dark:bg-white dark:text-black dark:hover:bg-gray-200 
+            rounded-full md:rounded-lg font-bold cursor-pointer
+            
+            whitespace-nowrap shrink-0 min-w-fit
+            
+            fixed bottom-6 right-6 w-14 h-14 shadow-lg z-50
+            
+            md:static md:w-auto md:h-10 md:px-4 md:py-2 md:shadow-none
+          "
         >
-          <Plus className="w-5 h-5" /> 단어 추가
+          <Plus className="w-5 h-5" />{" "}
+          <span className="hidden md:block">단어 추가</span>
         </button>
       </div>
 
