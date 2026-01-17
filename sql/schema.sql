@@ -68,6 +68,16 @@ CREATE TABLE IF NOT EXISTS public.ai_usage_logs (
   CONSTRAINT ai_usage_logs_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 
+-- 1-7. User Daily Visits (유저 출석 정보)
+CREATE TABLE IF NOT EXISTS public.user_daily_visits (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  user_id uuid NOT NULL,
+  visit_date date NOT NULL DEFAULT CURRENT_DATE,
+  created_at timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT user_daily_visits_pkey PRIMARY KEY (id),
+  CONSTRAINT user_daily_visits_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
+
 -- ==========================================
 -- 2. RLS(Row Level Security) 활성화
 -- ==========================================
@@ -77,6 +87,7 @@ ALTER TABLE public.words ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_usage_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_daily_visits ENABLE ROW LEVEL SECURITY;
 
 -- ==========================================
 -- 3. 보안 정책 (RLS Policies)
@@ -116,3 +127,7 @@ CREATE POLICY "내 북마크 삭제" ON public.bookmarks FOR DELETE TO authentic
 -- [Ai Logs]
 CREATE POLICY "로그인한 유저만 생성 가능" ON public.ai_usage_logs FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "자기 기록만 조회 가능" ON public.ai_usage_logs FOR SELECT TO authenticated USING (auth.uid() = user_id);
+
+-- [User Daily Visits]
+CREATE POLICY "자기 출석만 조회 가능" ON public.user_daily_visits FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "자기 출석만 추가 가능" ON public.user_daily_visits FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
