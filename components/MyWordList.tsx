@@ -11,7 +11,7 @@ import { AI_DAILY_LIMIT, AI_LIMIT_MESSAGE } from "@/constants/service";
 import ResetTimer from "@/components/ResetTimer";
 import SearchBar from "@/components/ui/SearchBar";
 import Modal from "@/components/ui/Modal";
-import { Loader2, TimerReset } from "lucide-react";
+import { Loader2, TimerReset, X } from "lucide-react";
 
 interface Props {
   initialCategories: Category[];
@@ -253,8 +253,18 @@ export default function MyWordList({
               />
 
               {/* 텍스트 */}
-              <span className="relative z-10 flex items-center justify-center gap-2 w-20">
-                {isAiMode ? "✨ 사용 중" : "✨ AI 예문"}
+              <span className="relative z-10 flex items-center justify-center gap-2 max-w-fit">
+                {isAiMode ? (
+                  <>
+                    <span>✨</span>
+                    <span className="hidden md:block">사용 중</span>
+                  </>
+                ) : (
+                  <>
+                    <span>✨</span>
+                    <span className="hidden md:block">AI 예문</span>
+                  </>
+                )}
               </span>
             </button>
           </div>
@@ -362,6 +372,13 @@ export default function MyWordList({
                     ${isClosing ? "animate-slide-down" : "animate-slide-up"}
                     `}
               >
+                <button
+                  onClick={handleToggleAiMode}
+                  className="md:hidden absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-xs text-gray-500 dark:text-gray-400"
+                >
+                  <X width={24} height={24} />
+                </button>
+
                 {/* 왼쪽: 선택된 단어 목록 */}
                 <div className="flex flex-1 flex-col gap-2 w-full md:w-auto">
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
