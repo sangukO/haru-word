@@ -28,6 +28,10 @@ export default async function Image({
     );
     const fontData = readFileSync(fontPath);
 
+    const logoPath = join(process.cwd(), "public", "icon.png");
+    const logoData = readFileSync(logoPath);
+    const logoBase64 = `data:image/png;base64,${logoData.toString("base64")}`;
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -39,56 +43,76 @@ export default async function Image({
 
     return new ImageResponse(
       (
-        // 썸네일 디자인
         <div
           style={{
-            background: "white",
+            background: "#fdfdfd",
             width: "100%",
             height: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
             fontFamily: '"Pretendard"',
+            padding: "80px 40px",
           }}
         >
-          {/* 상단 로고 */}
-          <div style={{ fontSize: 32, color: "#888", marginBottom: 20 }}>
-            하루단어
+          {/* 작은 로고, 브랜드명 */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img
+              src={logoBase64}
+              width="32"
+              height="32"
+              style={{ marginRight: 10 }}
+            />
+            <div style={{ fontSize: 30, color: "#888", fontWeight: 600 }}>
+              하루단어
+            </div>
           </div>
 
-          {/* 카테고리 */}
-          {word.category && (
-            <div
-              style={{
-                padding: "8px 20px",
-                borderRadius: "50px",
-                backgroundColor: word.category.color || "#eee", // 카테고리 색상 활용
-                color: "#fff",
-                fontSize: 24,
-                fontWeight: "bold",
-                marginBottom: 40,
-              }}
-            >
-              {word.category.name}
-            </div>
-          )}
-
-          {/* 메인 단어 */}
+          {/* 단어 카드 디자인 */}
           <div
             style={{
-              fontSize: 100,
-              fontWeight: 900,
-              color: "#111",
-              marginBottom: 20,
-              lineHeight: 1.1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+              padding: "40px 100px",
+              borderRadius: "40px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.05)",
+              border: "1px solid #f1f5f9",
             }}
           >
-            {word.word}
+            {word.category && (
+              <div
+                style={{
+                  padding: "6px 16px",
+                  borderRadius: "50px",
+                  backgroundColor: word.category.color || "#eee",
+                  color: "#fff",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 20,
+                }}
+              >
+                {word.category.name}
+              </div>
+            )}
+            <div
+              style={{
+                fontSize: 120,
+                fontWeight: 900,
+                color: "#111",
+                lineHeight: 1,
+                letterSpacing: "-3px",
+              }}
+            >
+              {word.word}
+            </div>
           </div>
 
           {/* 도메인 주소 */}
-          <div style={{ marginTop: 60, fontSize: 30, color: "#aaa" }}>
+          <div style={{ fontSize: 24, color: "#ccc", letterSpacing: "2px" }}>
             haruword.com
           </div>
         </div>
@@ -106,10 +130,7 @@ export default async function Image({
       }
     );
   } catch (e) {
-    // 에러 발생 시 터미널에 로그 출력
     console.error("OG Image 생성 실패:", e);
-
-    // 에러 났을 때 보여줄 기본 이미지 (폰트 없이)
     return new ImageResponse(
       (
         <div
