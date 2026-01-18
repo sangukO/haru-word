@@ -1,25 +1,19 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "@supabase/supabase-js";
-import { getWordById } from "@/services/wordService";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { getTodayDate } from "@/utils/date";
 
 export const runtime = "nodejs";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function Image({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export const revalidate = 3600;
 
-  console.log("OG Image 생성 시작 ID:", id);
-
+export default async function Image() {
   try {
-    // 환경변수 없이 파일 시스템에서 폰트 로드
+    // 폰트 로드
     const fontPath = join(
       process.cwd(),
       "public",
@@ -28,18 +22,46 @@ export default async function Image({
     );
     const fontData = readFileSync(fontPath);
 
+    // Supabase 연결
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const { data: word } = await getWordById(supabase, id);
+    // 오늘 날짜 구하기
+    const today = getTodayDate();
 
-    if (!word) return new ImageResponse(<div>Not Found</div>, { ...size });
+    // 오늘 날짜에 해당하는 단어 1개 가져오기
+    const { data: word } = await supabase
+      .from("words")
+      .select("*, category:categories(*)")
+      .eq("date", today)
+      .single();
+
+    if (!word) {
+      return new ImageResponse(
+        (
+          <div
+            style={{
+              background: "white",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 80,
+              fontWeight: 900,
+            }}
+          >
+            하루단어
+          </div>
+        ),
+        { ...size }
+      );
+    }
 
     return new ImageResponse(
       (
-        // 썸네일 디자인
         <div
           style={{
             background: "white",
@@ -63,7 +85,7 @@ export default async function Image({
               style={{
                 padding: "8px 20px",
                 borderRadius: "50px",
-                backgroundColor: word.category.color || "#eee", // 카테고리 색상 활용
+                backgroundColor: word.category.color || "#eee",
                 color: "#fff",
                 fontSize: 24,
                 fontWeight: "bold",
@@ -106,24 +128,21 @@ export default async function Image({
       }
     );
   } catch (e) {
-    // 에러 발생 시 터미널에 로그 출력
-    console.error("OG Image 생성 실패:", e);
-
-    // 에러 났을 때 보여줄 기본 이미지 (폰트 없이)
+    console.error("메인 화면 OG Image 생성 실패:", e);
     return new ImageResponse(
       (
         <div
           style={{
-            fontSize: 50,
             background: "white",
             width: "100%",
             height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: 50,
           }}
         >
-          이미지 생성 오류
+          하루단어
         </div>
       ),
       { ...size }
