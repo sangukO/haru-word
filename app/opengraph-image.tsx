@@ -13,7 +13,6 @@ export const revalidate = 3600;
 
 export default async function Image() {
   try {
-    // 폰트 로드
     const fontPath = join(
       process.cwd(),
       "public",
@@ -22,16 +21,18 @@ export default async function Image() {
     );
     const fontData = readFileSync(fontPath);
 
-    // Supabase 연결
+    // 로고 이미지 로드 및 Base64 변환
+    const logoPath = join(process.cwd(), "public", "icon.png");
+    const logoData = readFileSync(logoPath);
+    const logoBase64 = `data:image/png;base64,${logoData.toString("base64")}`;
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    // 오늘 날짜 구하기
     const today = getTodayDate();
 
-    // 오늘 날짜에 해당하는 단어 1개 가져오기
     const { data: word } = await supabase
       .from("words")
       .select("*, category:categories(*)")
@@ -64,53 +65,94 @@ export default async function Image() {
       (
         <div
           style={{
-            background: "white",
+            background: "#fdfdfd",
             width: "100%",
             height: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
             fontFamily: '"Pretendard"',
+            padding: "60px 40px",
           }}
         >
-          {/* 상단 로고 */}
-          <div style={{ fontSize: 32, color: "#888", marginBottom: 20 }}>
-            하루단어
-          </div>
-
-          {/* 카테고리 */}
-          {word.category && (
-            <div
-              style={{
-                padding: "8px 20px",
-                borderRadius: "50px",
-                backgroundColor: word.category.color || "#eee",
-                color: "#fff",
-                fontSize: 24,
-                fontWeight: "bold",
-                marginBottom: 40,
-              }}
-            >
-              {word.category.name}
-            </div>
-          )}
-
-          {/* 메인 단어 */}
+          {/* 로고, 브랜드명, 슬로건 */}
           <div
             style={{
-              fontSize: 100,
-              fontWeight: 900,
-              color: "#111",
-              marginBottom: 20,
-              lineHeight: 1.1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            {word.word}
+            <div
+              style={{ display: "flex", alignItems: "center", marginBottom: 8 }}
+            >
+              <img
+                src={logoBase64}
+                width="40"
+                height="40"
+                style={{ marginRight: 12 }}
+              />
+              <div style={{ fontSize: 36, color: "#111", fontWeight: 800 }}>
+                하루단어
+              </div>
+            </div>
+            <div style={{ fontSize: 20, color: "#666", fontWeight: 500 }}>
+              매일 하나씩 쌓이는 교양
+            </div>
           </div>
 
-          {/* 도메인 주소 */}
-          <div style={{ marginTop: 60, fontSize: 30, color: "#aaa" }}>
+          {/* 오늘의 단어 카드 */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "white",
+              padding: "50px 100px",
+              borderRadius: "40px",
+              boxShadow: "0 20px 50px rgba(0,0,0,0.05)",
+              border: "1px solid #f1f5f9",
+            }}
+          >
+            {word.category && (
+              <div
+                style={{
+                  padding: "6px 16px",
+                  borderRadius: "50px",
+                  backgroundColor: word.category.color || "#eee",
+                  color: "#fff",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 24,
+                }}
+              >
+                {word.category.name}
+              </div>
+            )}
+            <div
+              style={{
+                fontSize: 140,
+                fontWeight: 900,
+                color: "#111",
+                lineHeight: 1,
+                letterSpacing: "-4px",
+              }}
+            >
+              {word.word}
+            </div>
+          </div>
+
+          {/* 도메인 */}
+          <div
+            style={{
+              fontSize: 24,
+              color: "#aaa",
+              letterSpacing: "2px",
+              fontWeight: 500,
+            }}
+          >
             haruword.com
           </div>
         </div>
@@ -118,12 +160,7 @@ export default async function Image() {
       {
         ...size,
         fonts: [
-          {
-            name: "Pretendard",
-            data: fontData,
-            style: "normal",
-            weight: 700,
-          },
+          { name: "Pretendard", data: fontData, style: "normal", weight: 700 },
         ],
       }
     );
