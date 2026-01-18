@@ -77,15 +77,6 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     type: "website",
     url: "https://haruword.com",
-    // 썸네일 이미지 추가 시 주석 해제
-    // images: [
-    //   {
-    //     url: "./favicon.ico",
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "하루단어 서비스 미리보기",
-    //   },
-    // ],
   },
 
   // 로봇 메타데이터 설정
